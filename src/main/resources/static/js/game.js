@@ -2,6 +2,7 @@ const MY_NAME = "arek";
 const REVERS_CARD = "images/rewers.png";
 var stack = [null];
 var players = [null];
+var state = "WAIT";
 const CARDS_DECK = 24; 
 const FONT = "bold 14px Arial";
 var canvas = document.getElementById('canvas');
@@ -27,7 +28,7 @@ class player {
 }
 
 var gameStatus = {
-	"state" : "wait",
+	"state" : "WAIT",
 	"stack":
 			[
 				{"image":"walettrefl"},
@@ -88,7 +89,9 @@ var readGameStatus = function(jsonGameStatus) {
 		} else if (index === "players") {
 			players = toObjectPlayerArray(val);
 			//playersNumber = getPlayersNumber(players);
-		}	
+		} else if (index === "state") {
+			state = val;
+		}
 
 	});
 }
@@ -338,7 +341,7 @@ var drawGameBoard = function(playersArray, stack) {
 			break;
 
 		default:
-
+			
 	}
 			
 	drawStack(stack, cardWidth, cardHeight, 380);	
@@ -384,10 +387,14 @@ var playCard = function() {
 			START GAME
 -------------------------------------
 */
+if (state === "WAIT") {
+	
+} else {
+	readGameStatus(gameStatus);
+	drawGameBoard(players, stack);
+	$('.myDeck li').click(playCard);
+}
 
-readGameStatus(gameStatus);
-drawGameBoard(players, stack);
-$('.myDeck li').click(playCard);
 
 
 
