@@ -1,4 +1,4 @@
-package org.pwpw.game.game_elements;
+package org.pwpw.game.model;
 
 public class Player {
 
@@ -6,11 +6,13 @@ public class Player {
  private Deck deck;
  private boolean playNow;
  private String sessionId;
+ private Game game;
 
- public Player(String name, String sessionId) {
+ public Player(String name, String sessionId, Game game) {
   super();
   this.name = name;
   this.sessionId = sessionId;
+  this.game = game;
  }
 
  public String getName() {
@@ -43,6 +45,14 @@ public class Player {
 
  public void setSessionId(String sessionId) {
   this.sessionId = sessionId;
+ }
+
+ public Game getGame() {
+  return game;
+ }
+
+ public void setGame(Game game) {
+  this.game = game;
  }
 
 }

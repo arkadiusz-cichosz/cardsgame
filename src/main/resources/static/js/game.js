@@ -2,7 +2,7 @@ const MY_NAME = "arek";
 const REVERS_CARD = "images/rewers.png";
 var stack = [null];
 var players = [null];
-var state = "WAIT";
+var state = "WAITING";
 const CARDS_DECK = 24; 
 const FONT = "bold 14px Arial";
 var canvas = document.getElementById('canvas');
@@ -27,7 +27,7 @@ class player {
 	}
 }
 
-var gameStatus = {
+/*var gameStatus = {
 	"state" : "WAITING",
 	"stack":
 			[
@@ -80,20 +80,25 @@ var gameStatus = {
 						"playNow": 1
 					}
 				]
+}*/
+
+
+var readGameStatus = function() {
+	$.getJSON("status" , function(data) {
+		$.each(data, function(index, val) {
+			if (index === "gameState") {
+				console.log("gameState= " + val);
+				state = val;
+			}
+		});	
+	});
 }
 
-var readGameStatus = function(jsonGameStatus) {
-	$.each(jsonGameStatus, function(index, val) {
-		if (index === "stack") {
-			stack = val;
-		} else if (index === "players") {
-			players = toObjectPlayerArray(val);
-			//playersNumber = getPlayersNumber(players);
-		} else if (index === "state") {
-			state = val;
-		}
-
-	});
+var refresh = function() {
+	readGameStatus();
+	if (state !== "WAITING") {
+		drawGameBoard(players, stack);
+	}
 }
 
 var toObjectPlayerArray = function(JsonPlayersArray) {
@@ -387,13 +392,13 @@ var playCard = function() {
 			START GAME
 -------------------------------------
 */
-if (state === "WAITING") {
-	
-} else {
-	readGameStatus(gameStatus);
+readGameStatus();
+if (state !== "WAITING") {
 	drawGameBoard(players, stack);
-	$('.myDeck li').click(playCard);
 }
+setInterval(refresh, 5000);
+$('.myDeck li').click(playCard);
+
 
 
 

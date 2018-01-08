@@ -1,4 +1,4 @@
-package org.pwpw.game.game_elements;
+package org.pwpw.game.model;
 
 import java.util.ArrayList;
 import java.util.List;

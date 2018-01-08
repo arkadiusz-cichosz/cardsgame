@@ -53,12 +53,21 @@ canvas {
 }
 
 .modal-content {
+	position: relative;
 	background-color: white;
 	margin: 20% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 40%;
+    width: 30%;
     line-height: 32px; 
+}
+
+.modal-content-close {
+	font: bold 24px arial;
+	text-decoration: none;
+	position: absolute;
+	right: 5px;
+	top: 5px;
 }
 
 .button {
