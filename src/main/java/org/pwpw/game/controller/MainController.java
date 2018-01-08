@@ -23,7 +23,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
 @Controller
-public class ViewGame {
+public class MainController {
  
  @Autowired
  private PlayerRepository playerRepository;
