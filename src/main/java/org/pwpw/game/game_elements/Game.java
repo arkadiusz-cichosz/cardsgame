@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import org.springframework.stereotype.Component;
+@Component
 public class Game {
  private List<Player> players;
  private Stack<Card> gameStack;

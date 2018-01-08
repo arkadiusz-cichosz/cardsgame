@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
- <meta http-equiv="refresh" content="10">
+ <!-- <meta http-equiv="refresh" content="10"> -->
 <title>Gra w karty</title>
 <link rel="stylesheet" type="text/css" href="css/game.css">
 </head>

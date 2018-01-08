@@ -28,7 +28,7 @@ class player {
 }
 
 var gameStatus = {
-	"state" : "WAIT",
+	"state" : "WAITING",
 	"stack":
 			[
 				{"image":"walettrefl"},
@@ -387,7 +387,7 @@ var playCard = function() {
 			START GAME
 -------------------------------------
 */
-if (state === "WAIT") {
+if (state === "WAITING") {
 	
 } else {
 	readGameStatus(gameStatus);
