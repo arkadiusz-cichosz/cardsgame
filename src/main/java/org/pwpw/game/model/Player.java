@@ -7,15 +7,11 @@ public class Player {
  private boolean playNow;
  private Game game;
 
- public Player(String name, Game game) {
-  super();
-  this.name = name;
-  this.game = game;
- }
-
  public Player(String name) {
   super();
   this.name = name;
+  game = new Game();
+  game.addPlayer(this);
  }
  
  public Player() {
@@ -53,5 +49,4 @@ public class Player {
  public void setGame(Game game) {
   this.game = game;
  }
-
 }

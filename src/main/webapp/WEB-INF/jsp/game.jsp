@@ -28,34 +28,42 @@
       </ul>
     </div>
   </div>
- <%--  <c:set var="user" value=""/>
+  <%--  <c:set var="user" value=""/>
   <c:set var="players" value=""/> --%>
-  <c:choose>
-    <c:when test="${user == null}">
-     <div class="modal">
-        <div class="modal-content">
+  <div class="modal">
+    <div class="modal-content">
+      <c:choose>
+        <c:when test="${user == null}">
           <a href="cancel" class="modal-content-close">x</a>
           <h1>Dołącz do gry</h1>
           <form action="addPlayer" method="post">
-            <label>Twój nick: <input type="text" name="name"></label>
-            <label>Wybierz stół gry: <select name="table">
+            <p>
+              Twój nick: <input type="text" name="name">
+            </p>
+            <p>
+              Wybierz stół gry: <select name="table">
                 <option value="new" selected>Nowy</option>
-                <c:if test="${players != null}">
-                  <c:forEach items="${players}" var="item">
-                    <option value="${item.sessionId}">${item.name}</option>
+                <c:if test="${games != null}">
+                  <c:forEach items="${games}" var="item">
+                    <option value="${item.key}">${item.value.name}</option>
                   </c:forEach>
                 </c:if>
-            </select>
-            </label>
+              </select>
+            </p>
             <button type="submit">Dołącz</button>
           </form>
-        </div>
-      </div>
-    </c:when>
-    <c:otherwise>
-        <c:out value="nie jest pusty"></c:out>
-    </c:otherwise>
-  </c:choose>
+        </c:when>
+        <c:otherwise>
+          <h1>Stolik gracza ${user.name}"</h1>
+          <c:if test="${games != null}">
+            <c:forEach items="${games}" var="item">
+              <option value="${item.key}">${item.value.name}</option>
+            </c:forEach>
+          </c:if>
+        </c:otherwise>
+      </c:choose>
+    </div>
+  </div>
   <script src="js/jquery-3.2.1.min.js" type="application/javascript"></script>
   <script src="js/game.js" type="application/javascript"></script>
 </body>

@@ -33,6 +33,7 @@ public class Players implements PlayersRepository {
 
  @Override
  public void addPlayer(String sessionId, Player player) {
+  player.getGame().addPlayer(player);
   players.put(sessionId, player);
  }
 
@@ -45,9 +46,21 @@ public class Players implements PlayersRepository {
   }
  }
 
- public HashMap<String, Player> getWaitingGames() {
-  
-  return null;
+ public static HashMap<String, Player> getWaitingGames(HashMap<String, Player> players) {
+  HashMap<String, Player> freeGameList = new HashMap<>();
+  if(players != null && !players.isEmpty()) {
+   for (String sessionID : players.keySet()) { 
+    Player p = players.get(sessionID);
+    if(p.getGame().getGameState().equals(GameState.WAITING)) {
+     if(p.getGame().getPlayers().size() < 4) {
+      freeGameList.put(sessionID, p);
+     }
+    }
+   }
+   return freeGameList;
+  } else {
+   return null;
+  }
  }
 
 }

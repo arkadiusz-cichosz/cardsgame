@@ -5,25 +5,32 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 
-import org.springframework.stereotype.Component;
-
-public class Game  implements PlayersRepository{
- private HashMap<String, Player> players;
+public class Game {
+ //private HashMap<String, Player> players;
+ private List<Player> players;
  private Stack<Card> gameStack;
  private GameState gameState;
  
  public Game() {
   super();
-  players = new HashMap<>();
+  players = new ArrayList<Player>();
   gameState = GameState.WAITING;
   gameStack = new Stack<Card>();
  }
  
- public HashMap<String, Player> getPlayers() {
+ public Game(Player somePlayer) {
+  super();
+  players = new ArrayList<Player>();
+  players.add(somePlayer);
+  gameState = GameState.WAITING;
+  gameStack = new Stack<Card>();
+ }
+ 
+ public List<Player> getPlayers() {
   return players;
  }
 
- public void setPlayers(HashMap<String, Player> players) {
+ public void setPlayers(List<Player> players) {
   this.players = players;
  }
 
@@ -43,16 +50,14 @@ public class Game  implements PlayersRepository{
   this.gameState = gameState;
  }
 
-  @Override
- public Player getPlayer(String sessionId) {  if(players.size() > 0 && players.containsKey(sessionId)) {
-   return players.get(sessionId);
+ public Player getPlayer(int index) {  if(index < players.size()) {
+   return players.get(index);
   } else {
    return null;
   }
  }
 
- @Override
- public void addPlayer(String sessionId, Player player) {  players.put(sessionId, player);
+ public void addPlayer(Player player) {  players.add(player);
  }
  
 }
