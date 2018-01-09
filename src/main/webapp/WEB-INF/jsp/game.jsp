@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
- <!-- <meta http-equiv="refresh" content="10"> -->
+<!-- <meta http-equiv="refresh" content="10"> -->
 <title>Gra w karty</title>
 <link rel="stylesheet" type="text/css" href="css/game.css">
 </head>
@@ -28,21 +28,34 @@
       </ul>
     </div>
   </div>
-  <div class="modal">
-    <div class="modal-content">
-     <a href="cancel" class="modal-content-close">x</a>
-      <h1>Dołącz do gry</h1>
-      <form action="addPlayer" method="post">
-        <label>Twój nick: <input type="text" name="name"></label>
-        <label>Wybierz stół gry: <select name="table">
-            <option value="new" selected>Nowy</option>
-            <option value="Monika" >Monika</option>
-        </select>
-        </label>
-        <button type="submit">Dołącz</button> 
-      </form>
-    </div>
-  </div>
+ <%--  <c:set var="user" value=""/>
+  <c:set var="players" value=""/> --%>
+  <c:choose>
+    <c:when test="${user == null}">
+     <div class="modal">
+        <div class="modal-content">
+          <a href="cancel" class="modal-content-close">x</a>
+          <h1>Dołącz do gry</h1>
+          <form action="addPlayer" method="post">
+            <label>Twój nick: <input type="text" name="name"></label>
+            <label>Wybierz stół gry: <select name="table">
+                <option value="new" selected>Nowy</option>
+                <c:if test="${players != null}">
+                  <c:forEach items="${players}" var="item">
+                    <option value="${item.sessionId}">${item.name}</option>
+                  </c:forEach>
+                </c:if>
+            </select>
+            </label>
+            <button type="submit">Dołącz</button>
+          </form>
+        </div>
+      </div>
+    </c:when>
+    <c:otherwise>
+        <c:out value="nie jest pusty"></c:out>
+    </c:otherwise>
+  </c:choose>
   <script src="js/jquery-3.2.1.min.js" type="application/javascript"></script>
   <script src="js/game.js" type="application/javascript"></script>
 </body>

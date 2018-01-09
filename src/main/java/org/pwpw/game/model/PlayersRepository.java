@@ -1,8 +1,11 @@
 package org.pwpw.game.model;
 
+import java.util.HashMap;
+
 public interface PlayersRepository {
  
- public void addPlayer(Player player);
+ public void addPlayer(String sessionId, Player player);
 
- public void getPlayer(String sessinId);
+ public Player getPlayer(String sessionId);
+ 
 }

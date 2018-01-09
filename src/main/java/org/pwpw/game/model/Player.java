@@ -5,14 +5,21 @@ public class Player {
  private String name;
  private Deck deck;
  private boolean playNow;
- private String sessionId;
  private Game game;
 
- public Player(String name, String sessionId, Game game) {
+ public Player(String name, Game game) {
   super();
   this.name = name;
-  this.sessionId = sessionId;
   this.game = game;
+ }
+
+ public Player(String name) {
+  super();
+  this.name = name;
+ }
+ 
+ public Player() {
+  super();
  }
 
  public String getName() {
@@ -37,14 +44,6 @@ public class Player {
 
  public void setPlayNow(boolean playNow) {
   this.playNow = playNow;
- }
-
- public String getSessionId() {
-  return sessionId;
- }
-
- public void setSessionId(String sessionId) {
-  this.sessionId = sessionId;
  }
 
  public Game getGame() {

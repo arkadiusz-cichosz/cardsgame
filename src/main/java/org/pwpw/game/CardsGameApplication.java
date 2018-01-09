@@ -1,7 +1,5 @@
 package org.pwpw.game;
 
-import org.pwpw.game.game_elements.PlayerRepository;
-import org.pwpw.game.game_elements.PlayersStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
