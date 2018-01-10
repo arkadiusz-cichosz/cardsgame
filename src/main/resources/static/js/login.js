@@ -1,22 +1,27 @@
 /**
  * Aktualizacja listy, gier do których użytkownik może dołączyć
  */
+var preData = null;
+var curData	= null;
 
 var checkOptions = function(newOptions) {
-	var defOption = $('<option></option>').attr("value", "new").text("Nowy");																	// option
-	var $gameList = $("#gameList");
-	$gameList.empty().append(defOption);
+	$('#gameList').children('option:not(:first)').remove();
 	$.each(newOptions, function(key, val) {
-		var option = $('<option></option>').attr("value", key).text(value);
-		$gameList.append(option);
+		console.log("Key=" + key + " value=" + val);
+		option = $('<option></option>').attr("value", key).text(val);
+		$("#gameList").append(option);
 	});
 }
 
 var pullFormOptions = function() {
 	$.getJSON("status/options", function(data) {
-		checkOptions(data)
+		curData = JSON.stringify(data);
+		if(preData !== curData) {
+			checkOptions(data);
+			preData = curData;
+		}
 	});
 }
 
 pullFormOptions();
-setInterval(pullFormOptions, 3000);
+setInterval(pullFormOptions, 5000);

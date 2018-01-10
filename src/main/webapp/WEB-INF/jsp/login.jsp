@@ -6,7 +6,6 @@
 <html>
 <head>
 <meta charset="UTF-8">
- <meta http-equiv="refresh" content="10">
 <title>Gra w karty</title>
 <link rel="stylesheet" type="text/css" href="css/game.css">
 </head>
@@ -20,8 +19,8 @@
           Twój nick: <input type="text" name="name">
         </p>
         <p>
-          Wybierz stół gry: <select id="gameList" name="table">
- 
+          Wybierz stół gry: <select id="gamerList" name="table">
+            <option value="new" selected>Nowy</option>
           </select>
         </p>
         <button type="submit">Dołącz</button>
@@ -29,6 +28,6 @@
     </div>
   </div>
   <script src="js/jquery-3.2.1.min.js" type="application/javascript"></script>
-  <script src="js/game.js" type="application/javascript"></script>
+  <script src="js/login.js" type="application/javascript"></script>
 </body>
 </html>

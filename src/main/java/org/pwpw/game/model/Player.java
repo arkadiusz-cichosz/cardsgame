@@ -6,16 +6,26 @@ public class Player {
  private Deck deck;
  private boolean playNow;
  private Game game;
+ private boolean initiator;
 
- public Player(String session, String name) {
+ public Player(String session, String name, Boolean initiator) {
   super();
   this.name = name;
+  this.initiator = initiator;
   game = new Game();
   game.addPlayer(session, this.name);
  }
  
  public Player() {
   super();
+ }
+
+ public boolean isInitiator() {
+  return initiator;
+ }
+
+ public void setInitiator(boolean initiator) {
+  this.initiator = initiator;
  }
 
  public String getName() {

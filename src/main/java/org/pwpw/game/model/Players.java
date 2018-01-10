@@ -38,8 +38,8 @@ public class Players implements PlayersRepository {
  }
  
  @Override
- public void addPlayer(String sessionId, String name) {
-  Player player = new Player(sessionId, name);
+ public void addPlayer(String sessionId, String name, Boolean isInitiator) {
+  Player player = new Player(sessionId, name, isInitiator);
   this.addPlayer(sessionId, player);
  }
 
@@ -59,9 +59,9 @@ public class Players implements PlayersRepository {
     Player p = players.get(sessionID);
     if(p.getGame().getGameState().equals(GameState.WAITING)) {
      if(p.getGame().getPlayers().size() < 4) {
-      String session = (String) p.getGame().getPlayers().keySet().toArray()[0];
-      String name = p.getGame().getPlayers().get(session);
-      freeGameList.put(session, name);
+      if(p.isInitiator()) {
+       freeGameList.put(sessionID, p.getName());
+      }
      }
     }
    }
@@ -69,5 +69,17 @@ public class Players implements PlayersRepository {
   } else {
    return null;
   }
+ }
+
+ @Override
+ public boolean removePlayer(String sessionId) {
+  if(players.size() > 0 && players.containsKey(sessionId)) {
+   players.get(sessionId).getGame().getPlayers().remove(sessionId);
+   players.remove(sessionId);
+   return true;
+  } else {
+   return false;
+  }
+  
  }
 }
