@@ -7,30 +7,30 @@ import java.util.Stack;
 
 public class Game {
  //private HashMap<String, Player> players;
- private List<Player> players;
+ private HashMap<String, String> players;
  private Stack<Card> gameStack;
  private GameState gameState;
  
  public Game() {
   super();
-  players = new ArrayList<Player>();
+  players = new HashMap<>();
   gameState = GameState.WAITING;
   gameStack = new Stack<Card>();
  }
  
- public Game(Player somePlayer) {
+ public Game(String session, String name) {
   super();
-  players = new ArrayList<Player>();
-  players.add(somePlayer);
+  players = new HashMap<>();
+  players.put(session, name);
   gameState = GameState.WAITING;
   gameStack = new Stack<Card>();
  }
- 
- public List<Player> getPlayers() {
+
+ public HashMap<String, String> getPlayers() {
   return players;
  }
 
- public void setPlayers(List<Player> players) {
+ public void setPlayers(HashMap<String, String> players) {
   this.players = players;
  }
 
@@ -50,14 +50,22 @@ public class Game {
   this.gameState = gameState;
  }
 
- public Player getPlayer(int index) {  if(index < players.size()) {
+ /*public Player getfirstPlayer(int index) {  if(index < players.size()) {
    return players.get(index);
   } else {
    return null;
   }
+ }*/
+
+ public void addPlayer(String session, String Name) {  players.put(session, Name);
  }
 
- public void addPlayer(Player player) {  players.add(player);
+ public String getPlayer(int i) {
+  if(i < players.size()) {
+   return players.get(players.keySet().toArray()[0]);
+  } else {
+   return null;
+  }
  }
  
 }

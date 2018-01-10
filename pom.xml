@@ -53,6 +53,11 @@
 			<groupId>javax.json</groupId>
 			<artifactId>javax.json-api</artifactId>
 		</dependency>
+		<dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20171018</version>
+        </dependency>
 	</dependencies>
 
 	<build>

@@ -7,11 +7,11 @@ public class Player {
  private boolean playNow;
  private Game game;
 
- public Player(String name) {
+ public Player(String session, String name) {
   super();
   this.name = name;
   game = new Game();
-  game.addPlayer(this);
+  game.addPlayer(session, this.name);
  }
  
  public Player() {

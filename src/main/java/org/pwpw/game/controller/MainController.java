@@ -35,12 +35,14 @@ public class MainController {
   }
   
   if (players.getPlayers() != null) {
-   HashMap<String, Player> freePlayers;
+   HashMap<String, String> freePlayers;
+   System.out.println("*************START*******************");
    if ((freePlayers = Players.getWaitingGames(players.getPlayers())) != null) {
     for (String mysession : freePlayers.keySet()) {
-     System.out.println("Gracz: " + freePlayers.get(mysession).getName() + " jest na liście");
+     System.out.println("Gracz: " + freePlayers.get(mysession) + " jest na liście");
     }
    }
+   System.out.println("**************END********************");
   }
   
   return "game";
@@ -48,8 +50,8 @@ public class MainController {
  
  @PostMapping("/addPlayer")
  public String addUser(@RequestParam(value = "table", required = true) String table, @RequestParam(value = "name", required = false, defaultValue = "user#") String name, Model model, HttpSession session) {
-  Player newPlayer = new Player(name);
-  players.addPlayer(session.getId(), newPlayer);
+  Player newPlayer;
+  players.addPlayer(session.getId(), newPlayer = new Player(session.getId(), name));
   if(table.equals("new")) {
    System.out.println("Dodanie nowego gracza: " + name);
    System.out.println("Utworzenie nowego stolika z grą");
@@ -58,8 +60,8 @@ public class MainController {
    Player existingPlayer = players.getPlayer(table);
    System.out.println("Dodanie nowego gracza " + name + " do stolika gracza " + existingPlayer.getName());
    newPlayer.setGame(existingPlayer.getGame());
-   System.out.println("Stolik gracza: " + existingPlayer.getGame().getPlayer(0).getName());
-   existingPlayer.getGame().addPlayer(newPlayer);
+   System.out.println("Stolik gracza: " + existingPlayer.getGame().getPlayer(0));
+   existingPlayer.getGame().addPlayer(session.getId(), name);
    System.out.println("Dodano: " + name + " do stolika gracza");
   } 
   return "redirect:/";

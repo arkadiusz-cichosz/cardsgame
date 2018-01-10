@@ -84,7 +84,7 @@ class player {
 
 
 var readGameStatus = function() {
-	$.getJSON("status" , function(data) {
+	$.getJSON("status/game" , function(data) {
 		$.each(data, function(index, val) {
 			if (index === "gameState") {
 				console.log("gameState= " + val);
