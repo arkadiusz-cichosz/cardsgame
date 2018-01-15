@@ -24,7 +24,7 @@ canvas {
 	height: auto;
 }
 
-.myDeck ul{
+.myPlayers ul, .myDeck ul{
 	list-style-type: none;
 }
 

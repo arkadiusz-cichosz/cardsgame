@@ -47,7 +47,8 @@ public class Card {
  }
 
  public void setId() {
-  id = Integer.parseInt((String.valueOf(value.getValue()) + String.valueOf(color)));
+  id = Integer.parseInt((String.valueOf(value.getValue()) + color.name().hashCode()));
+  //System.out.println("Id="+id);
  }
 
 }

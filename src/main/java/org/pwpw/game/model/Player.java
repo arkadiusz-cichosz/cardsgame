@@ -3,7 +3,7 @@ package org.pwpw.game.model;
 public class Player {
 
  private String name;
- private Deck deck;
+ private PlayerDeck deck;
  private boolean playNow;
  private Game game;
  private boolean initiator;
@@ -13,7 +13,7 @@ public class Player {
   this.name = name;
   this.initiator = initiator;
   game = new Game();
-  game.addPlayer(session, this.name);
+  game.addPlayer(session, this);
  }
  
  public Player() {
@@ -40,7 +40,7 @@ public class Player {
   return deck;
  }
 
- public void setDeck(Deck deck) {
+ public void setDeck(PlayerDeck deck) {
   this.deck = deck;
  }
 

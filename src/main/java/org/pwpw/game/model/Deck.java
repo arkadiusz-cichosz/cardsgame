@@ -3,7 +3,7 @@ package org.pwpw.game.model;
 import java.util.ArrayList;
 import java.util.List;
 
-class Deck {
+public class Deck {
  protected List<Card> cards = new ArrayList<>();
  protected int deckSize;
 

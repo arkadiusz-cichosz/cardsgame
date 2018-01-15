@@ -2,7 +2,7 @@ package org.pwpw.game.model;
 
 import java.util.Random;
 
-public class PanDeck extends Deck {
+public final class PanDeck extends Deck {
  public PanDeck() {
   for (Color color : Color.values()) {
    for (Rank rank : Rank.values()) {

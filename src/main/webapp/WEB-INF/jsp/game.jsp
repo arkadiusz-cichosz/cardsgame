@@ -30,7 +30,7 @@
   </div>
   <%--  <c:set var="user" value=""/>
   <c:set var="players" value=""/> --%>
-  <div class="modal">
+<%--   <div class="modal">
     <div class="modal-content">
       <c:choose>
         <c:when test="${user == null}">
@@ -63,7 +63,7 @@
         </c:otherwise>
       </c:choose>
     </div>
-  </div>
+  </div> --%>
   <script src="js/jquery-3.2.1.min.js" type="application/javascript"></script>
   <script src="js/game.js" type="application/javascript"></script>
 </body>

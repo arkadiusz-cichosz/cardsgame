@@ -12,4 +12,7 @@ public class PlayerDeck extends Deck {
   super(cards);
  }
 
+ public List<Card> getCards() {
+  return super.cards;
+ }
 }

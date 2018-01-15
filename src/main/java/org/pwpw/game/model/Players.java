@@ -33,7 +33,7 @@ public class Players implements PlayersRepository {
 
  @Override
  public void addPlayer(String sessionId, Player player) {
-  player.getGame().addPlayer(sessionId, player.getName());
+  player.getGame().addPlayer(sessionId, player);
   players.put(sessionId, player);
  }
  
@@ -45,7 +45,7 @@ public class Players implements PlayersRepository {
 
  @Override
  public Player getPlayer(String sessionId) {
-  if(players.size() > 0 && players.containsKey(sessionId)) {
+  if(players.size() > 0 & players.containsKey(sessionId)) {
    return players.get(sessionId);
   } else {
    return null;

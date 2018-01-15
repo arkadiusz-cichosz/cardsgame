@@ -12,16 +12,11 @@
 <body>
   <div class="modal">
     <div class="modal-content">
-    <a href="cancel" class="modal-content-close">x</a>
-      <h1>Witaj ${user}</h1>
-          <p>Oto lista twoich graczy:</p>
-          <ul id="gamerList"></ul>
-          <button disabled>START</button>
-        
-          <p>Oczekujesz na uruchomienie gry przez innego gracza...</p>
-          <img alt="" src="images/klepsydra.png">
-        
+      <a href="cancel" class="modal-content-close">x</a>
+      <article id="dialogBlock"></article>
     </div>
   </div>
+  <script src="js/jquery-3.2.1.min.js" type="application/javascript"></script>
+  <script src="js/init.js" type="application/javascript"></script>
 </body>
 </html>

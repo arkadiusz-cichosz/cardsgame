@@ -20,7 +20,7 @@
         </p>
         <p>
           Wybierz stół gry: <select id="gamerList" name="table">
-            <option value="new" selected>Nowy</option>
+            <option value="new">Nowy</option>
           </select>
         </p>
         <button type="submit">Dołącz</button>
