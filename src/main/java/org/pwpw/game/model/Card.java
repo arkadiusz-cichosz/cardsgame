@@ -21,7 +21,6 @@ public class Card {
  public void setName() {
   StringBuilder stringBuilder = new StringBuilder();
   stringBuilder.append(value.getValue());
-  stringBuilder.append(" ");
   stringBuilder.append(color.name());
   name = stringBuilder.toString();
  }
