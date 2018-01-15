@@ -28,42 +28,6 @@
       </ul>
     </div>
   </div>
-  <%--  <c:set var="user" value=""/>
-  <c:set var="players" value=""/> --%>
-<%--   <div class="modal">
-    <div class="modal-content">
-      <c:choose>
-        <c:when test="${user == null}">
-          <a href="cancel" class="modal-content-close">x</a>
-          <h1>Dołącz do gry</h1>
-          <form action="addPlayer" method="post">
-            <p>
-              Twój nick: <input type="text" name="name">
-            </p>
-            <p>
-              Wybierz stół gry: <select name="table">
-                <option value="new" selected>Nowy</option>
-                <c:if test="${games != null}">
-                  <c:forEach items="${games}" var="item">
-                    <option value="${item.key}">${item.value.name}</option>
-                  </c:forEach>
-                </c:if>
-              </select>
-            </p>
-            <button type="submit">Dołącz</button>
-          </form>
-        </c:when>
-        <c:otherwise>
-          <h1>Stolik gracza ${user.name}"</h1>
-          <c:if test="${games != null}">
-            <c:forEach items="${games}" var="item">
-              <option value="${item.key}">${item.value.name}</option>
-            </c:forEach>
-          </c:if>
-        </c:otherwise>
-      </c:choose>
-    </div>
-  </div> --%>
   <script src="js/jquery-3.2.1.min.js" type="application/javascript"></script>
   <script src="js/game.js" type="application/javascript"></script>
 </body>
