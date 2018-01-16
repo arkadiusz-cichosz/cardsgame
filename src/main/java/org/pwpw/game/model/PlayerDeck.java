@@ -15,4 +15,8 @@ public class PlayerDeck extends Deck {
  public List<Card> getCards() {
   return super.cards;
  }
+ 
+ public void removeCard(String name) {
+  super.removeCard(name);
+ }
 }

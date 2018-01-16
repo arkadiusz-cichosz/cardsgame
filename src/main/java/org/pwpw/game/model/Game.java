@@ -67,6 +67,7 @@ public class Game implements Serializable{
  public void init(Deck gamedeck) {
   List<Card> tempCardsList = gamedeck.getCards();
   int playersNumber = players.size();
+  boolean firstMove = false;
   int cardsListSize = tempCardsList.size();
   int count = cardsListSize/playersNumber;
   for(String sessionKey : players.keySet()) {
@@ -74,10 +75,14 @@ public class Game implements Serializable{
    int i = 0;
    while(i < count) {
     deck.getCards().add(tempCardsList.get(0));
+    if(tempCardsList.get(0).getName().equals("9Kier")) {
+     firstMove = true;
+    }
     tempCardsList.remove(0);
     i++;
    }
    players.get(sessionKey).setDeck(deck);
+   players.get(sessionKey).setPlayNow(firstMove);
   }
  }
  

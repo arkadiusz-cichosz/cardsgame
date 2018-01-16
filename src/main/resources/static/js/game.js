@@ -4,6 +4,8 @@ const FONT = "14px Arial";
 var canvas = document.getElementById('canvas');
 var context = canvas.getContext('2d');	
 var MY_NAME = "Arek";
+var selectedCardId = null;
+
 class player {
 	constructor(deck, name, playNow) {
 		this.deck = deck;
@@ -23,61 +25,7 @@ class player {
 	}
 }
 
-/*var gameStatus = {
-	"state" : "WAITING",
-	"stack":
-			[
-				
-				"10Trefl",
-				"9Pik"
-			],
-	
-	"players":
-				[
-					{	"playerName":"arek", 
-					 	"playerDeck":
-					 				[
-										{"image":"9trefl"},
-										{"image":"damatrefl"},
-										{"image":"astrefl"},
-										{"image":"walettrefl"},
-										{"image":"10trefl"},
-										{"image":"walettrefl"},
-										{"image":"10trefl"}
-									],
-						"playNow": 0
-					},
-
-					{	"playerName":"wacek", 
-		 				"playerDeck":
-		 							[
-										{"image":"10trefl"},
-										{"image":"kroltrefl"}
-									],
-						"playNow": 0
-					},
-
-					{	"playerName":"ola", 
-		 				"playerDeck":
-		 							[
-										{"image":"10trefl"}
-
-									],
-						"playNow": 0
-					},
-					{	"playerName":"zdzichu", 
-		 				"playerDeck":
-		 							[
-										{"image":"astrefl"},
-										{"image":"walettrefl"},
-										{"image":"10trefl"},
-
-									],
-						"playNow": 1
-					}
-				]
-}*/
-
+/*---------------*/
 
 var readGameStatus = function() {
 	$.getJSON("status/game" , function(data) {
@@ -103,15 +51,18 @@ var readGameStatus = function() {
 	});
 }
 
+/*---------------*/
+
 var toObjectPlayerArray = function(JsonPlayersArray) {
 	var list =[];
 	$.each(JsonPlayersArray, function() {
-		var name;
-		var deck;
-		var play;
+		var name = "";
+		var deck = null;
+		var play = 0;
 		$.each(this, function(index, val) {
 			if(index === "playerName") {
 				name = val;
+				console.log("playerName=" + name);
 			}
 			
 			else if(index === "playerDeck") {
@@ -119,7 +70,13 @@ var toObjectPlayerArray = function(JsonPlayersArray) {
 			}
 
 			else if (index === "playNow") {
-				play = val; 
+				if(val === false) {
+					play = 0;
+				} else if (val === true) {
+					play = 1;
+				} else {
+					console.log("nieprawidłowe dane lub brak danych w obszarze playNow !");
+				}
 			}
 
 		});
@@ -127,6 +84,8 @@ var toObjectPlayerArray = function(JsonPlayersArray) {
 	});
 	return list;
 }
+
+/*---------------*/
 
 var toArray = function(JsonArray) {
 	var array = [];
@@ -138,6 +97,8 @@ var toArray = function(JsonArray) {
 	return array;
 }
 
+/*---------------*/
+
 var drawGameBoard = function(playersArray, stack) {
 	
 	var cardWidth = 160;
@@ -145,7 +106,7 @@ var drawGameBoard = function(playersArray, stack) {
 	var topPlayerDeck = null;
 	var stackCardImage = null;
 	var reversImage = null;
-	var X_TOP_POSITION = 150;
+	var X_TOP_POSITION = 300;//150;
 	var X_LEFT_POSITION = 0;
 	var Y_LEFT_POSITION = Y_RIGHT_POSITION = 190;
 	var X_RIGHT_POSITION = 715;
@@ -163,7 +124,7 @@ var drawGameBoard = function(playersArray, stack) {
 
 				else {
 					console.log("rysuję talię gracza " + playersArray[i].getName());
-				
+					
 					if(playersArray[i].getPlayNow() === 1) {
 							
 						context.fillText("Teraz gra: " + playersArray[i].getName(),420,14);
@@ -171,11 +132,11 @@ var drawGameBoard = function(playersArray, stack) {
 					}
 
 					else {
-
-						context.fillText("Teraz gra: " + playersArray[i].getName(),420,14);
+						
+						context.fillText(playersArray[i].getName(),420,14);
 					}
 
-					X_TOP_POSITION = (920 - (cardWidth + ((toArray(playersArray[i].getDeck()).length-1)*10)))/2;
+					X_TOP_POSITION = (920 - (cardWidth + ((((playersArray[i].getDeck()).length)-1)*10)))/2;
 
 					$.each(playersArray[i].getDeck(), function() {
 	
@@ -212,7 +173,6 @@ var drawGameBoard = function(playersArray, stack) {
 						}
 
 						else {
-
 							context.fillText(playersArray[i].getName(),x,y);
 						}
 					
@@ -271,7 +231,7 @@ var drawGameBoard = function(playersArray, stack) {
 							} 
 
 							else {
-
+						
 								context.fillText(playersArray[i].getName(),420,14);
 							
 							}
@@ -354,6 +314,8 @@ var drawGameBoard = function(playersArray, stack) {
 	drawStack(stack, cardWidth, cardHeight, 380);	
 }
 
+/*---------------*/
+
 var drawStack = function(stack, cardW, cardH, X_TOP_POSITION) {
 	// X_TOP_POSITION = 150;
 	if(stack != null) {
@@ -371,37 +333,80 @@ var drawStack = function(stack, cardW, cardH, X_TOP_POSITION) {
 		console.log('Stos jest pusty!');
 	}
 }
+/*---------------*/
 
 var drawMyDeck = function (lista) {
-	var shift = 700;
+	var shift = 0;
+	var len = lista.length;
+	if(len < 6) {
+		shift = 800;
+	} else if (len >= 6 & len < 8) {
+		shift = 700;
+	} else if (len >= 8 & len < 10) {
+		shift = 600;
+	} else if (len >= 10 & len <= 12) {
+		shift = 500;
+	}
+	
 	// $('.myDeck ul').empty();
 	if(lista != null) {
 		$.each(lista, function(index, val) {
-			$('<li id="' + val + '"><img src="images/' + val + ".png" + '" alt="' + index + '" ></li>').css({
+			$('<li data-card="' + val + '"><img src="images/' + val + ".png" + '" alt="' + index + '" ></li>').css({
 				'position' : 'absolute',
 				'left' : shift
 			}).appendTo('.myDeck ul');
 			shift = shift + 80;	
 		});
+		
+		var choised = false;
+		
+		$('.myDeck ul li').click(function() {	
+			if(choised === false) {
+				$(this).addClass("clicked");
+				choised = true;
+				selectedCardId = $(this).data("card");
+				console.log("selectedCardId =" + selectedCardId);
+			} else {
+				$(this).removeClass("clicked");
+				choised = false;
+				selectedCardId = null;
+			}
+		});
 	}
 }
 
-var playCard = function() {
-	var id = $(this).attr('id');
-	console.log(id);
+/*---------------*/
+
+var playCard = function(selectedCardId) {
+	var urlDataAddress = "status/addCard/" + selectedCardId;
 }
+	$.getJSON(urlDataAddress , function(data) {
+		
+	}
+}
+
+/*---------------*/
+
+var getGamerName = function(playersArray) {
+	var gamerName = "";
+	$.each(playersArray, function(index, value) {
+		if(playersArray[index].getPlayNow() === 1) {
+			gamerName = playersArray[index].getName();
+		}
+	});
+	return gamerName;
+}
+
 
 /*
 -------------------------------------
 			START GAME
 -------------------------------------
 */
+
 readGameStatus();
-/*if (state !== "WAITING") {
-	drawGameBoard(players, stack);
-}*/
 setInterval(readGameStatus(), 5000);
-$('.myDeck li').click(playCard);
+
 
 
 

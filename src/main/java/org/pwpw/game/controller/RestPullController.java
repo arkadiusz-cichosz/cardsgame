@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import javax.servlet.http.HttpSession;
 
@@ -15,9 +16,12 @@ import org.pwpw.game.model.Game;
 import org.pwpw.game.model.GameState;
 import org.pwpw.game.model.PanDeck;
 import org.pwpw.game.model.Player;
+import org.pwpw.game.model.PlayerDeck;
 import org.pwpw.game.model.Players;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -60,6 +64,7 @@ public class RestPullController {
 		if (players.getPlayers() != null) {
 			if (players.getPlayer(sessionID) != null) {
 				jsonObject.put("name", players.getPlayers().get(sessionID).getName());
+				jsonObject.put("gameState", players.getPlayers().get(sessionID).getGame().getGameState());
 				HashMap<String, String> freePlayers = Players.getWaitingGames(players.getPlayers());
 				if (freePlayers.containsKey(sessionID)) {
 					jsonObject.put("isYourGame", true);
@@ -83,12 +88,12 @@ public class RestPullController {
 	}
 	
 	public String createJsonGameStatus(String sessionID, Game game) {
-		ArrayList<Card> stackCards = new ArrayList<>(game.getGameStack());
+		ArrayList<String> stackCards = new ArrayList<>(game.getGameStack());
 		HashMap<String, Player> gamePlayers = game.getPlayers();
 		JSONObject gameStatus = new JSONObject();
 		
-		for (Card card : stackCards) {
-			gameStatus.append("stack", card.getName());
+		for (String cardName : stackCards) {
+			gameStatus.append("stack", cardName);
 		}
 
 		for (String key : gamePlayers.keySet()) {
@@ -108,8 +113,32 @@ public class RestPullController {
 	 gameStatus.accumulate("myName", players.getPlayer(sessionID).getName());
 
 		return gameStatus.toString();
-
-		
 	}
-
+	
+	@PostMapping("/status/addCard/{id}")
+	public String addCards(HttpSession httpSession, @PathVariable("id") String id) {
+	 String sessionID = httpSession.getId();
+	 Player player = players.getPlayer(sessionID);
+	 PlayerDeck deck = (PlayerDeck) player.getDeck();
+	 Game game = player.getGame();
+	 Stack<Card> stack = game.getGameStack();
+	 if(stack.isEmpty()) {
+	  if(id.equals("9Kier")) {
+	   deck.getCards().get(index);
+	   stack.push();//połóż na stosie swoja kartę
+	   deck.removeCard(id);  //zdejmij kartę ze swojej talii
+	   return new JSONObject().accumulate("validation", true).toString();//dobra karta 
+	  } else {
+	   return new JSONObject().accumulate("validation", false).toString();//zła karta 
+	  }
+	 } else {
+	  stack.peek().substring(0,1)
+	  if(.equals(id.substring(0, 2))) {
+	   
+	  } else {
+	   
+	  }
+	  return null;
+	 } 
+	}
 }

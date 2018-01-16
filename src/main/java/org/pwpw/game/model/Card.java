@@ -1,5 +1,7 @@
 package org.pwpw.game.model;
 
+import java.util.List;
+
 public class Card {
  private String name;
  private Rank value;
@@ -48,6 +50,16 @@ public class Card {
  public void setId() {
   id = Integer.parseInt((String.valueOf(value.getValue()) + color.name().hashCode()));
   //System.out.println("Id="+id);
+ }
+ 
+ public static boolean compareTwoCards(Card card1, List<Card> cards) {
+  boolean isTrue = false;
+  for (Card card : cards) {
+   if (card.getName().equals(card1.name)) {
+    isTrue = true;
+   }
+  }
+  return isTrue;
  }
 
 }

@@ -27,5 +27,27 @@ public class Deck {
  public void setDeckSize() {
   deckSize = cards.size();
  }
+ 
+ public void removeCard(String name) {
+  for (Card card : cards) {
+   int index = 0;
+   if (card.getName().equals(name)) {
+    index = cards.indexOf(card);
+    cards.remove(index);
+   }
+  }
+ }
+ 
+ public Card getCard(String name) {
+  Card c = null;
+  for (Card card : cards) {
+   int index = 0;
+   if (card.getName().equals(name)) {
+    index = cards.indexOf(card.getName());
+    c = cards.get(index);
+   } 
+  }
+  return c;
+ }
 
 }

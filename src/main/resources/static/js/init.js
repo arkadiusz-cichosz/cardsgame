@@ -8,12 +8,14 @@ var checkInit = function(newOptions) {
 	$dialogBlock = $("#dialogBlock").addClass('myPlayers');
 	$dialogBlock.children().remove();
 	var isYourGame = false;
+	var gameState = "WAITING";
 	var $header = $('<p></p>').text("...");
 	var myName = "";
 	var $gamers = $('<ul></ul>');
 	var numberPlayers = 0;
 	var $intro = $('<p></p>');
-	var $startButton = $('<a></a>').attr("href", "start").text("START");
+	var $startMasterButton = $('<a></a>').attr("href", "start").text("START");
+	var $startButton = $('<a></a>').attr("href", "").text("START");
 	var $clepsydra = $('<img>').attr("alt", "klepsydra").attr("src",
 			"images/klepsydra.png");
 
@@ -37,7 +39,10 @@ var checkInit = function(newOptions) {
 					$gamers.append(listItem);
 				}
 			});
-		} else {
+		} else if (key === "gameState") {
+			gameState = val;
+		} 
+		else {
 			$header.text("Wystąpił nieoczekiwany błąd...");
 		}
 	});
@@ -48,14 +53,22 @@ var checkInit = function(newOptions) {
 		$dialogBlock.append($intro);
 		$dialogBlock.append($gamers);
 		if (numberPlayers >= 2) {
-			$dialogBlock.append($startButton);
+			$dialogBlock.append($startMasterButton);
 		}
 
 	} else {
-		$intro.text("Oczekujesz na uruchomienie gry przez innego gracza...");
-		$dialogBlock.append($header);
-		$dialogBlock.append($intro);
-		$dialogBlock.append($clepsydra);
+		if(gameState === "IN_PROGRESS") {
+			$intro.text("Gra gotowa możesz zaczynac kliknij 'start'.");
+			$dialogBlock.append($header);
+			$dialogBlock.append($intro);
+			$dialogBlock.append($startButton);
+		} else {
+			$intro.text("Oczekujesz na uruchomienie gry przez innego gracza...");
+			$dialogBlock.append($header);
+			$dialogBlock.append($intro);
+			$dialogBlock.append($clepsydra);
+		}
+		
 	}
 }
 
