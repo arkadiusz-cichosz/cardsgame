@@ -1,12 +1,9 @@
-const MY_NAME = "arek";
 const REVERS_CARD = "images/rewers.png";
-
-//var state = "WAITING";
 const CARDS_DECK = 24; 
-const FONT = "bold 14px Arial";
+const FONT = "14px Arial";
 var canvas = document.getElementById('canvas');
 var context = canvas.getContext('2d');	
-
+var MY_NAME = "Arek";
 class player {
 	constructor(deck, name, playNow) {
 		this.deck = deck;
@@ -32,6 +29,7 @@ class player {
 			[
 				
 				"10Trefl",
+				"9Pik"
 			],
 	
 	"players":
@@ -83,18 +81,26 @@ class player {
 
 var readGameStatus = function() {
 	$.getJSON("status/game" , function(data) {
-		var stack = [null];
-		var players = [null];
-		$.each(JSON.stringify(data), function(index, val) {
-			
-		}
+		var stack = null;
+		var players = null;
+		var state = "WAITING";
+		$.each(data, function(index, val) {
+			if(index === "myName") {
+				MY_NAME = val;
+				console.log("myName=" + MY_NAME);
+			} else if(index === "stack") {
+				stack = val;
+				console.log("Stack=" + stack);
+			} else if(index === "state") {
+				state = val;
+				console.log("State=" + state);
+			} else if(index === "players") {
+				players = toObjectPlayerArray(val);
+				console.log("Players=" + players);
+			}
+		});
 		drawGameBoard(players, stack);
 	});
-}
-
-var refresh = function() {
-	readGameStatus();
-	
 }
 
 var toObjectPlayerArray = function(JsonPlayersArray) {
@@ -144,7 +150,7 @@ var drawGameBoard = function(playersArray, stack) {
 	var Y_LEFT_POSITION = Y_RIGHT_POSITION = 190;
 	var X_RIGHT_POSITION = 715;
 	context.font = FONT;
-
+	console.log("PlayersArrayLength=" + playersArray.length);
 	switch(playersArray.length) {
 
 		case 2:
@@ -349,33 +355,35 @@ var drawGameBoard = function(playersArray, stack) {
 }
 
 var drawStack = function(stack, cardW, cardH, X_TOP_POSITION) {
-	//X_TOP_POSITION = 150;
-	$.each(stack, function() {
-		$.each(this, function(index,val) {
+	// X_TOP_POSITION = 150;
+	if(stack != null) {
+		console.log('Rysuję stos..');
+		$.each(stack, function(index,val) {
 			stackCardImage = new Image();
-			console.log('stos');
+			console.log('Element stosu=' + val);
 			stackCardImage.onload = function() {
 				context.drawImage(stackCardImage, X_TOP_POSITION = X_TOP_POSITION + 5, 350, cardW, cardH);
 			}
 			stackCardImage.src = "images/" + val + ".png";
 			console.log("src="+stackCardImage.src);
 		});
-	});
+	} else {
+		console.log('Stos jest pusty!');
+	}
 }
 
 var drawMyDeck = function (lista) {
 	var shift = 700;
-	//$('.myDeck ul').empty();
-	$.each(lista, function() {
-		$.each(this, function(index, val) {
-		$('<li id="' + val + '"><img src="images/' + val + ".png" + '" alt="' + index + '" ></li>').css({
-			'position' : 'absolute',
-			'left' : shift
-		}).appendTo('.myDeck ul');
-		shift = shift + 80;
-		});		
-	});
-	
+	// $('.myDeck ul').empty();
+	if(lista != null) {
+		$.each(lista, function(index, val) {
+			$('<li id="' + val + '"><img src="images/' + val + ".png" + '" alt="' + index + '" ></li>').css({
+				'position' : 'absolute',
+				'left' : shift
+			}).appendTo('.myDeck ul');
+			shift = shift + 80;	
+		});
+	}
 }
 
 var playCard = function() {
@@ -389,11 +397,10 @@ var playCard = function() {
 -------------------------------------
 */
 readGameStatus();
-drawGameBoard(players, stack);
 /*if (state !== "WAITING") {
 	drawGameBoard(players, stack);
 }*/
-setInterval(refresh, 5000);
+setInterval(readGameStatus(), 5000);
 $('.myDeck li').click(playCard);
 
 

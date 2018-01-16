@@ -84,9 +84,9 @@ public class RestPullController {
 	
 	public String createJsonGameStatus(String sessionID, Game game) {
 		ArrayList<Card> stackCards = new ArrayList<>(game.getGameStack());
-		HashMap<String, Player> gamePlayers = players.getPlayer(sessionID).getGame().getPlayers();
+		HashMap<String, Player> gamePlayers = game.getPlayers();
 		JSONObject gameStatus = new JSONObject();
-
+		
 		for (Card card : stackCards) {
 			gameStatus.append("stack", card.getName());
 		}
@@ -105,6 +105,7 @@ public class RestPullController {
 		}
 
 		gameStatus.accumulate("state", players.getPlayer(sessionID).getGame().getGameState());
+	 gameStatus.accumulate("myName", players.getPlayer(sessionID).getName());
 
 		return gameStatus.toString();
 
