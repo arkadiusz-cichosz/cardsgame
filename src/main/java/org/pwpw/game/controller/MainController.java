@@ -21,6 +21,9 @@ public class MainController {
  @Autowired
  Players players;
  
+ @Autowired
+ PanDeck panDeck;
+ 
  @GetMapping("/")
  public String main(HttpSession session) {
   String sessionID = session.getId();
@@ -43,12 +46,12 @@ public class MainController {
  @GetMapping("/start")
  public String start(HttpSession session) {
   String sessionID = session.getId();
+  Player player = players.getPlayer(sessionID);
   System.out.println("SessionID is=" + sessionID);
-  if (players.getPlayer(sessionID) != null) {
+  if (player != null) {
    //session.setMaxInactiveInterval(45 * 60);
-   players.getPlayer(sessionID).getGame().setGameState(GameState.IN_PROGRESS);
-   final PanDeck panDeck = new PanDeck();
-   players.getPlayer(sessionID).getGame().init(panDeck);
+   player.getGame().setGameState(GameState.IN_PROGRESS);
+   player.getGame().init(panDeck);
    System.out.println("Gra zainicjowana");
   } else {
    System.out.println("Nie ma ciebie na liście graczy");

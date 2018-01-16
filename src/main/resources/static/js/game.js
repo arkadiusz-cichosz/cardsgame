@@ -379,10 +379,18 @@ var drawMyDeck = function (lista) {
 
 var playCard = function(selectedCardId) {
 	var urlDataAddress = "status/addCard/" + selectedCardId;
-}
 	$.getJSON(urlDataAddress , function(data) {
-		
-	}
+		var validation;
+		var statement;
+		$.each(data, function(index, value) {
+			if(index === "validation") {
+				validation = val;
+			} else if (index === "statement") {
+				statement = val;
+			}
+			pullValidation(validation, statement);
+		});
+	});
 }
 
 /*---------------*/
@@ -397,6 +405,16 @@ var getGamerName = function(playersArray) {
 	return gamerName;
 }
 
+/*---------------*/
+
+var pullValidation = function(v,s) {
+	if(v === true) {
+		console.log(s);
+	} else {
+		console.log(s);
+		alert(s);
+	}
+}
 
 /*
 -------------------------------------
@@ -406,6 +424,7 @@ var getGamerName = function(playersArray) {
 
 readGameStatus();
 setInterval(readGameStatus(), 5000);
+$('#ok').click(playCard(selectedCardId));
 
 
 

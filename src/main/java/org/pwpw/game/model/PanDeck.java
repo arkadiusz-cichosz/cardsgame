@@ -2,6 +2,9 @@ package org.pwpw.game.model;
 
 import java.util.Random;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public final class PanDeck extends Deck {
  public PanDeck() {
   for (Color color : Color.values()) {

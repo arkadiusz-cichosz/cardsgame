@@ -1,6 +1,8 @@
 package org.pwpw.game.model;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
@@ -52,6 +54,23 @@ public class Players implements PlayersRepository {
   }
  }
 
+ public static void loopGame(HashMap<String, Player> players, Player currentPlayer) {
+	 int i = 0;
+	 
+		for (String key : players.keySet()) {
+			if (players.get(key).hashCode() == currentPlayer.hashCode()) {
+				currentPlayer.setPlayNow(false);
+				i = 1;
+				break;		
+			}
+			
+			if (i == 1) {
+				players.get(key).setPlayNow(true);
+			} 
+
+		}
+ }
+ 
  public static HashMap<String, String> getWaitingGames(HashMap<String, Player> players) {
   HashMap<String, String> freeGameList = new HashMap<>();
   if(players != null && !players.isEmpty()) {
