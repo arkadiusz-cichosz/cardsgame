@@ -1,5 +1,7 @@
 package org.pwpw.game.model;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Random;
 
 import org.springframework.stereotype.Component;
@@ -16,12 +18,6 @@ public final class PanDeck extends Deck {
  }
 
  public void shuffleDeck() {
-  Random random = new Random();
-  for (int i = deckSize - 1; i > 0; i--) {
-   int index = random.nextInt(i + 1);
-   Card c = cards.get(index);
-   cards.add(index, cards.get(i));
-   cards.add(i, c);
-  }
+  Collections.shuffle(cards);
  }
 }

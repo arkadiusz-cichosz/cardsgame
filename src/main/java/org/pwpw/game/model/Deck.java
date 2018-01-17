@@ -5,7 +5,6 @@ import java.util.List;
 
 public class Deck {
  protected List<Card> cards = new ArrayList<>();
- protected int deckSize;
 
  public Deck() {
   super();
@@ -23,31 +22,33 @@ public class Deck {
  public void setCards(List<Card> cards) {
   this.cards = cards;
  }
-
- public void setDeckSize() {
-  deckSize = cards.size();
- }
  
  public void removeCard(String name) {
+  int index = 0;
   for (Card card : cards) {
-   int index = 0;
    if (card.getName().equals(name)) {
-    index = cards.indexOf(card);
     cards.remove(index);
+    break;
    }
+   index++;
   }
  }
  
  public Card getCard(String name) {
   Card c = null;
+  int index = 0;
   for (Card card : cards) {
-   int index = 0;
    if (card.getName().equals(name)) {
-    index = cards.indexOf(card.getName());
     c = cards.get(index);
-   } 
+    break;
+   }
+   index++;
   }
   return c;
+ }
+ 
+ public void addCard(Card card) {
+  cards.add(card);
  }
 
 }

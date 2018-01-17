@@ -9,11 +9,11 @@ public class PlayerDeck extends Deck {
  }
 
  public PlayerDeck(List<Card> cards) {
-  super(cards);
+  this.cards = cards;
  }
 
  public List<Card> getCards() {
-  return super.cards;
+  return cards;
  }
  
  public void removeCard(String name) {

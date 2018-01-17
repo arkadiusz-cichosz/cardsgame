@@ -5,6 +5,8 @@ var canvas = document.getElementById('canvas');
 var context = canvas.getContext('2d');	
 var MY_NAME = "Arek";
 var selectedCardId = null;
+var isClicked = false;
+var choised = false;
 
 class player {
 	constructor(deck, name, playNow) {
@@ -111,13 +113,17 @@ var drawGameBoard = function(playersArray, stack) {
 	var Y_LEFT_POSITION = Y_RIGHT_POSITION = 190;
 	var X_RIGHT_POSITION = 715;
 	context.font = FONT;
-	console.log("PlayersArrayLength=" + playersArray.length);
+	$('.gamebuttons').hide();
+	
 	switch(playersArray.length) {
 
 		case 2:
 			for(var i = 0; i < 2; i++) {
 				if (playersArray[i].getName() === MY_NAME) {
 					console.log("rysuję moją talię gracza " + playersArray[i].getName());
+					if(playersArray[i].getPlayNow() === 1) {
+						$('.gamebuttons').show();
+					}
 					drawMyDeck(playersArray[i].getDeck());
 					console.log("talia gracza " + playersArray[i].getName() + " gotowa" );
 				} 
@@ -159,6 +165,11 @@ var drawGameBoard = function(playersArray, stack) {
 			for(var i = 0; i < 3; i++) {
 				if (playersArray[i].getName() === MY_NAME) {
 					console.log("rysuję moją talię gracza " + playersArray[i].getName());
+					
+					if(playersArray[i].getPlayNow() === 1) {
+						$('.gamebuttons').show();
+					}
+					
 					drawMyDeck(playersArray[i].getDeck());
 					console.log("talia gracza " + playersArray[i].getName() + " gotowa" );
 				} 
@@ -215,6 +226,11 @@ var drawGameBoard = function(playersArray, stack) {
 
 				if (playersArray[i].getName() === MY_NAME) {
 					console.log("rysuję moją talię gracza " + playersArray[i].getName());
+					
+					if(playersArray[i].getPlayNow() === 1) {
+						$('.gamebuttons').show();
+					}
+					
 					drawMyDeck(playersArray[i].getDeck());
 					console.log("talia gracza " + playersArray[i].getName() + " gotowa" );
 				}
@@ -223,6 +239,7 @@ var drawGameBoard = function(playersArray, stack) {
 						
 						console.log("rysuję talię gracza " + playersArray[i].getName());
 						if(leftIsBussy && rightIsBussy) {
+							
 							if(playersArray[i].getPlayNow() === 1) {
 
 								context.fillText("Teraz gra: " + playersArray[i].getName(),420,14);
@@ -351,24 +368,22 @@ var drawMyDeck = function (lista) {
 	// $('.myDeck ul').empty();
 	if(lista != null) {
 		$.each(lista, function(index, val) {
-			$('<li data-card="' + val + '"><img src="images/' + val + ".png" + '" alt="' + index + '" ></li>').css({
+			$('<li id="' + val + '"><img src="images/' + val + ".png" + '" alt="' + index + '" ></li>').css({
 				'position' : 'absolute',
 				'left' : shift
 			}).appendTo('.myDeck ul');
-			shift = shift + 80;	
+			shift += 80;	
 		});
 		
-		var choised = false;
-		
-		$('.myDeck ul li').click(function() {	
-			if(choised === false) {
-				$(this).addClass("clicked");
-				choised = true;
-				selectedCardId = $(this).data("card");
-				console.log("selectedCardId =" + selectedCardId);
+		$('.myDeck ul li').click(function() {
+			if(!$(this).hasClass("clicked")) {
+				if(isClicked === false) {
+					$(this).addClass("clicked");
+					selectedCardId = $(this).attr("id");	
+				} 
 			} else {
 				$(this).removeClass("clicked");
-				choised = false;
+				isClicked = false;
 				selectedCardId = null;
 			}
 		});
@@ -378,17 +393,44 @@ var drawMyDeck = function (lista) {
 /*---------------*/
 
 var playCard = function(selectedCardId) {
+	console.log("Klik OK:" + selectedCardId);
 	var urlDataAddress = "status/addCard/" + selectedCardId;
+	$.getJSON(urlDataAddress , function(data) {
+		var validation = null;
+		var statement = null;
+		$.each(data, function(index, value) {
+			if(index === "validation") {
+				validation = value;
+				console.log("value is:" + value);
+				console.log("validation is:" + validation);
+			} else if (index === "statement") {
+				statement = value;
+				console.log("statement is:" + statement);
+			}
+		});
+		pullValidation(validation, statement);
+	});
+}
+
+/*---------------*/
+
+var takeCards = function() {
+	var urlDataAddress = "status/takeCards";
 	$.getJSON(urlDataAddress , function(data) {
 		var validation;
 		var statement;
 		$.each(data, function(index, value) {
 			if(index === "validation") {
-				validation = val;
+				validation = value;
 			} else if (index === "statement") {
-				statement = val;
+				statement = value;
 			}
-			pullValidation(validation, statement);
+			if(validation === "true") {
+				readGameStatus();
+				console.log(statement);	
+			} else {
+				console.log("Operacja dodania kart do talii gracza niepowiodła się");
+			}		
 		});
 	});
 }
@@ -408,8 +450,9 @@ var getGamerName = function(playersArray) {
 /*---------------*/
 
 var pullValidation = function(v,s) {
-	if(v === true) {
+	if(v === "true") {
 		console.log(s);
+		readGameStatus();
 	} else {
 		console.log(s);
 		alert(s);
@@ -424,7 +467,10 @@ var pullValidation = function(v,s) {
 
 readGameStatus();
 setInterval(readGameStatus(), 5000);
-$('#ok').click(playCard(selectedCardId));
+$('#ok').click(function() {
+	playCard(selectedCardId);
+});
+//$('#take').click(takeCards);
 
 
 

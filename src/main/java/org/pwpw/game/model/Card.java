@@ -16,6 +16,14 @@ public class Card {
   setId();
  }
 
+ public Card(Card card) {
+  super();
+  this.value = card.getValue();
+  this.color = card.getColor();
+  setName();
+  setId();
+ }
+
  public String getName() {
   return name;
  }
