@@ -71,9 +71,9 @@ public class RestPullController {
 				jsonObject.put("gameState", players.getPlayers().get(sessionID).getGame().getGameState());
 				HashMap<String, String> freePlayers = Players.getWaitingGames(players.getPlayers());
 				if (freePlayers.containsKey(sessionID)) {
-					jsonObject.put("isYourGame", true);
+					jsonObject.put("isYourGame", "true");
 				} else {
-					jsonObject.put("isYourGame", false);
+					jsonObject.put("isYourGame", "false");
 				}
 				jsonObject.put("gamers", mapToJSONArray(players.getPlayer(sessionID).getGame().getPlayers()));
 			} else {
@@ -166,7 +166,7 @@ public class RestPullController {
   JSONObject jsonObject = new JSONObject();
   if (players.getPlayer(sessionID) != null) {
    Player player = players.getPlayer(sessionID);
-   PlayerDeck deck = (PlayerDeck) player.getDeck();
+   Deck deck = player.getDeck();
    Game game = player.getGame();
    Stack<Card> stack = game.getGameStack();
    for (int i = 0; i < 3; i++) {
@@ -178,6 +178,7 @@ public class RestPullController {
    return jsonObject.toString();
   } else {
    jsonObject.accumulate("validation", "false");
+   jsonObject.accumulate("statement", "Wystąpił bład, karty nie zostały dodane do talli.");
    return jsonObject.toString();
   }
  }

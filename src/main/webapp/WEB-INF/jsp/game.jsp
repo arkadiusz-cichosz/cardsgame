@@ -21,8 +21,8 @@
       </canvas>
     </div>
     <div class="gamebuttons">
-      <button id="ok">OK</button>
-      <button id="take">WEŹ KARTY</button>
+      <!-- <button id="ok">OK</button>
+      <button id="take">WEŹ KARTY</button> -->
       <!-- <button id="cancel" >ZREZYGNUJ Z GRY</button> -->
     </div>
     <div class="myDeck">

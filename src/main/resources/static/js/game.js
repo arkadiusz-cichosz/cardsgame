@@ -7,6 +7,11 @@ var MY_NAME = "Arek";
 var selectedCardId = null;
 var isClicked = false;
 var choised = false;
+$button_ok = $('<button></button>').text("Kładę").attr('id','ok');
+$button_take = $('<button></button>').text("Biorę").attr('id','take');
+$('.gamebuttons').append($button_ok );
+$('.gamebuttons').append($button_take);
+$('.gamebuttons').hide();
 
 class player {
 	constructor(deck, name, playNow) {
@@ -113,7 +118,6 @@ var drawGameBoard = function(playersArray, stack) {
 	var Y_LEFT_POSITION = Y_RIGHT_POSITION = 190;
 	var X_RIGHT_POSITION = 715;
 	context.font = FONT;
-	$('.gamebuttons').hide();
 	
 	switch(playersArray.length) {
 
@@ -123,6 +127,8 @@ var drawGameBoard = function(playersArray, stack) {
 					console.log("rysuję moją talię gracza " + playersArray[i].getName());
 					if(playersArray[i].getPlayNow() === 1) {
 						$('.gamebuttons').show();
+					} else {
+						$('.gamebuttons').hide();
 					}
 					drawMyDeck(playersArray[i].getDeck());
 					console.log("talia gracza " + playersArray[i].getName() + " gotowa" );
@@ -168,6 +174,8 @@ var drawGameBoard = function(playersArray, stack) {
 					
 					if(playersArray[i].getPlayNow() === 1) {
 						$('.gamebuttons').show();
+					} else {
+						$('.gamebuttons').hide();
 					}
 					
 					drawMyDeck(playersArray[i].getDeck());
@@ -229,6 +237,8 @@ var drawGameBoard = function(playersArray, stack) {
 					
 					if(playersArray[i].getPlayNow() === 1) {
 						$('.gamebuttons').show();
+					} else {
+						$('.gamebuttons').hide();
 					}
 					
 					drawMyDeck(playersArray[i].getDeck());
@@ -425,12 +435,9 @@ var takeCards = function() {
 			} else if (index === "statement") {
 				statement = value;
 			}
-			if(validation === "true") {
-				readGameStatus();
-				console.log(statement);	
-			} else {
-				console.log("Operacja dodania kart do talii gracza niepowiodła się");
-			}		
+			readGameStatus();
+			console.log("Validation:" + validation);
+			console.log(statement);
 		});
 	});
 }
@@ -452,11 +459,11 @@ var getGamerName = function(playersArray) {
 var pullValidation = function(v,s) {
 	if(v === "true") {
 		console.log(s);
-		readGameStatus();
 	} else {
 		console.log(s);
 		alert(s);
 	}
+	readGameStatus();
 }
 
 /*
@@ -465,12 +472,17 @@ var pullValidation = function(v,s) {
 -------------------------------------
 */
 
-readGameStatus();
-setInterval(readGameStatus(), 5000);
-$('#ok').click(function() {
-	playCard(selectedCardId);
+$( document ).ready(function() {
+	readGameStatus();
+	setInterval(readGameStatus, 5000);
+	$('#ok').click(function() {
+		playCard(selectedCardId);
+	});
+	$('#take').click(function() {
+		takeCards();
+	});
 });
-//$('#take').click(takeCards);
+
 
 
 

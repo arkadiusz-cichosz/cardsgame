@@ -5,9 +5,9 @@
 var preData = null;
 var curData = null;
 var checkInit = function(newOptions) {
-	$dialogBlock = $("#dialogBlock").addClass('myPlayers');
+	var $dialogBlock = $("#dialogBlock").addClass('myPlayers');
 	$dialogBlock.children().remove();
-	var isYourGame = false;
+	var isYourGame = "false";
 	var gameState = "WAITING";
 	var $header = $('<p></p>').text("...");
 	var myName = "";
@@ -47,7 +47,7 @@ var checkInit = function(newOptions) {
 		}
 	});
 
-	if (isYourGame === true) {
+	if (isYourGame === "true") {
 		$intro.text("Oto lista twoich graczy:");
 		$dialogBlock.append($header);
 		$dialogBlock.append($intro);
