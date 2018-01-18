@@ -63,12 +63,17 @@ canvas {
     text-align: center; 
 }
 
-.modal-content-close {
+.modal-content-close, .close {
 	font: bold 24px arial;
 	text-decoration: none;
 	position: absolute;
 	right: 5px;
-	top: 5px;
+    top: 5px;
+}
+
+.close {
+	padding: 2px;
+	background-color: white;
 }
 
 .button {

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Stack;
 
 import javax.servlet.http.HttpServletResponse;
@@ -19,19 +18,14 @@ import org.pwpw.game.model.Game;
 import org.pwpw.game.model.GameState;
 import org.pwpw.game.model.PanDeck;
 import org.pwpw.game.model.Player;
-import org.pwpw.game.model.PlayerDeck;
 import org.pwpw.game.model.Players;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 @RestController
 public class RestPullController {
@@ -46,22 +40,11 @@ public class RestPullController {
 	public String gameStatus(HttpSession session, HttpServletResponse servletResponse, Model model) {
 		String sessionID = session.getId();
 		if (players.getPlayer(sessionID) != null) {
-		 if(players.getPlayer(sessionID).getGame().getGameState().equals(GameState.END)) {
-		  endState(servletResponse);
-		 } 
-		 return createJsonGameStatus(sessionID, players.getPlayer(sessionID).getGame());
+		 Player player = players.getPlayers().get(sessionID);
+		 return createJsonGameStatus(sessionID, player.getGame());
 		} else {
 			return null;
 		}
-	}
-
-	@GetMapping("/status/end")
-	public void endState(HttpServletResponse servletResponse) {
-	 try {
-   servletResponse.sendRedirect("/");
-  } catch (IOException e) {
-   e.printStackTrace();
-  }
 	}
 	
 	@GetMapping("/status/options")
@@ -81,16 +64,17 @@ public class RestPullController {
 		String sessionID = httpSession.getId();
 		JSONObject jsonObject = new JSONObject();
 		if (players.getPlayers() != null) {
-			if (players.getPlayer(sessionID) != null) {
-				jsonObject.put("name", players.getPlayers().get(sessionID).getName());
-				jsonObject.put("gameState", players.getPlayers().get(sessionID).getGame().getGameState());
+		 Player player = players.getPlayers().get(sessionID);
+			if (player != null) {
+				jsonObject.put("name", player.getName());
+				jsonObject.put("gameState", player.getGame().getGameState());
 				HashMap<String, String> freePlayers = Players.getWaitingGames(players.getPlayers());
 				if (freePlayers.containsKey(sessionID)) {
 					jsonObject.put("isYourGame", "true");
 				} else {
 					jsonObject.put("isYourGame", "false");
 				}
-				jsonObject.put("gamers", mapToJSONArray(players.getPlayer(sessionID).getGame().getPlayers()));
+				jsonObject.put("gamers", mapToJSONArray(player.getGame().getPlayers()));
 			} else {
 				jsonObject.put("name", "deleted");
 			}
@@ -134,54 +118,58 @@ public class RestPullController {
 		return gameStatus.toString();
 	}
 
-	@GetMapping("/status/addCard/{id}")
-	public String addCard(HttpSession httpSession, @PathVariable("id") String id) {
-		String sessionID = httpSession.getId();
-		Player player = players.getPlayer(sessionID);
-		Deck deck = player.getDeck();
-		System.out.println("Deck size is: " + deck.getCards().size());
-		Game game = player.getGame();
-		Stack<Card> stack = game.getGameStack();
-		JSONObject jsonObject = new JSONObject();
-		if (stack.isEmpty()) {
-   if (id.equals("9Kier")) {
-    Card c = deck.getCard(id);
-    String cardName = c.getName(); 
-    stack.push(c);// połóż na stosie swoja kartę
-    deck.removeCard(id); // zdejmij kartę ze swojej talii
-    jsonObject.accumulate("validation", "true");// dobra karta
-    jsonObject.accumulate("statement", "Karta wydana prawidłowo.");
-    Players.loopGame(game.getPlayers(), player);
-    return jsonObject.toString();
-   } else {
-				jsonObject.accumulate("validation", "false");// zła karta
-				jsonObject.accumulate("statement", "Położyłeś niewłaściwą kartę !");
-				return jsonObject.toString();
-			}
-		} else {
-			Card pushedCard = deck.getCard(id);
-			if ((pushedCard.getValue().compareTo(stack.peek().getValue())) >= 0) {
-				stack.push(deck.getCard(id));// połóż na stosie swoja kartę
-				deck.removeCard(id); // zdejmij kartę ze swojej talii
-				if(deck.getCards().isEmpty()) {
-				 game.setGameState(GameState.END);
-				 jsonObject.accumulate("validation", "true");// dobra karta
+ @GetMapping("/status/addCard/{id}")
+ public String addCard(HttpSession httpSession, @PathVariable("id") String id) {
+  String sessionID = httpSession.getId();
+  Player player = players.getPlayer(sessionID);
+  Deck deck = player.getDeck();
+  System.out.println("Deck size is: " + deck.getCards().size());
+  Game game = player.getGame();
+  Stack<Card> stack = game.getGameStack();
+  JSONObject jsonObject = new JSONObject();
+  if (id != null) {
+   if (stack.isEmpty()) {
+    if (id.equals("9Kier")) {
+     stack.push(deck.getCard(id));// połóż na stosie swoja kartę
+     deck.removeCard(id); // zdejmij kartę ze swojej talii
+     jsonObject.accumulate("validation", "true");// dobra karta
      jsonObject.accumulate("statement", "Karta wydana prawidłowo.");
+     Players.loopGame(game.getPlayers(), player);
      return jsonObject.toString();
-				} else {
-				 jsonObject.accumulate("validation", "true");// dobra karta
-	    jsonObject.accumulate("statement", "Karta wydana prawidłowo.");
-	    Players.loopGame(game.getPlayers(), player);
-	    return jsonObject.toString();
-				}
-				
-			} else {
-				jsonObject.accumulate("validation", "false");// zła karta
-				jsonObject.accumulate("statement", "Położyłeś niewłaściwą kartę !");
-				return jsonObject.toString();
-			}
-		}
-	}
+    } else {
+     jsonObject.accumulate("validation", "false");// zła karta
+     jsonObject.accumulate("statement", "Położyłeś niewłaściwą kartę !");
+     return jsonObject.toString();
+    }
+   } else {
+    Card pushedCard = deck.getCard(id);
+    if ((pushedCard.getValue().compareTo(stack.peek().getValue())) >= 0) {
+     stack.push(deck.getCard(id));// połóż na stosie swoja kartę
+     deck.removeCard(id); // zdejmij kartę ze swojej talii
+     if (deck.getCards().isEmpty()) {
+      game.setGameState(GameState.END);
+      jsonObject.accumulate("validation", "true");// dobra karta
+      jsonObject.accumulate("statement", "Karta wydana prawidłowo. Koniec gry");
+      return jsonObject.toString();
+     } else {
+      jsonObject.accumulate("validation", "true");// dobra karta
+      jsonObject.accumulate("statement", "Karta wydana prawidłowo.");
+      Players.loopGame(game.getPlayers(), player);
+      return jsonObject.toString();
+     }
+
+    } else {
+     jsonObject.accumulate("validation", "false");// zła karta
+     jsonObject.accumulate("statement", "Położyłeś niewłaściwą kartę !");
+     return jsonObject.toString();
+    }
+   }
+  } else {
+   jsonObject.accumulate("validation", "false");// zła karta
+   jsonObject.accumulate("statement", "Nie wyłożyłeś żadnej karty !");
+   return jsonObject.toString();
+  }
+ }
 	
  @GetMapping("/status/takeCards")
  public String takeCards(HttpSession httpSession) {

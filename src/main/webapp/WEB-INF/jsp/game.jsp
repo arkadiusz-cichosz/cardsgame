@@ -7,7 +7,9 @@
 <head>
 <meta charset="UTF-8">
 <!-- <meta http-equiv="refresh" content="10"> -->
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Cache-Control"
+  content="no-cache, no-store, must-revalidate"
+/>
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
 <title>Gra w karty</title>
@@ -30,6 +32,7 @@
 
       </ul>
     </div>
+    <a href="cancel" class="close">&times</a>
   </div>
   <script src="js/jquery-3.2.1.min.js" type="application/javascript"></script>
   <script src="js/game.js" type="application/javascript"></script>

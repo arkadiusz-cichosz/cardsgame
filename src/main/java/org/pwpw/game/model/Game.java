@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 
+import org.springframework.ui.Model;
+
 public class Game implements Serializable{
 
  private static final long serialVersionUID = 1L;
@@ -65,19 +67,19 @@ public class Game implements Serializable{
  }
  
  public void init(Deck gamedeck) {
-  List<Card> tempCardsList = gamedeck.getCards();
+  List<Card> tempCardsList = new ArrayList<>(gamedeck.getCards());
   int playersNumber = players.size();
-  boolean firstMove = false;
   int cardsListSize = tempCardsList.size();
   int count = cardsListSize/playersNumber;
   for(String sessionKey : players.keySet()) {
    PlayerDeck deck = new PlayerDeck();
+   boolean firstMove = false;
    int i = 0;
    while(i < count) {
     deck.getCards().add(tempCardsList.get(0));
     if(tempCardsList.get(0).getName().equals("9Kier")) {
      firstMove = true;
-    }
+    } 
     tempCardsList.remove(0);
     i++;
    }

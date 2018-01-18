@@ -1,5 +1,11 @@
 package org.pwpw.game.controller;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map.Entry;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,21 +33,21 @@ public class MainController {
  @GetMapping("/")
  public String main(HttpSession session) {
   String sessionID = session.getId();
-
-  if ((players.getPlayer(sessionID)) == null) {
+  Player player = players.getPlayer(sessionID);
+  if (player == null) {
    System.out.println("...nie odnaleziono gracza " + sessionID);
    return "login";
   } else {
-   if(players.getPlayer(sessionID).getGame().getGameState().equals(GameState.WAITING)) {
+   if(player.getGame().getGameState().equals(GameState.WAITING)) {
     System.out.println("Inicjalizacja...");
     //session.setMaxInactiveInterval(5 * 60);
     return "init";
-   } else if(players.getPlayer(sessionID).getGame().getGameState().equals(GameState.IN_PROGRESS)) {
+   } else if(player.getGame().getGameState().equals(GameState.IN_PROGRESS)) {
     System.out.println("Gra...");
     return "game";
    } else {
     System.out.println("Koniec gry");
-    return "end";
+    return "game";
    }
   }
  }
@@ -50,18 +56,15 @@ public class MainController {
  public String start(HttpSession session) {
   String sessionID = session.getId();
   Player player = players.getPlayer(sessionID);
-  Game game = player.getGame();
-  System.out.println("SessionID is=" + sessionID);
   if (player != null) {
+   Game game = player.getGame();
    //session.setMaxInactiveInterval(45 * 60);
    if(game.getGameState().equals(GameState.WAITING)) {
     game.setGameState(GameState.IN_PROGRESS);
     game.init(panDeck);
    }
    System.out.println("Gra zainicjowana");
-  } else {
-   System.out.println("Nie ma ciebie na liście graczy");
-  }
+  } 
   return "redirect:/";
  }
  
@@ -89,13 +92,31 @@ public class MainController {
  @GetMapping("/cancel")
  public String cancel(HttpSession session) {
   String sessionID = session.getId();
-  if(players.removePlayer(sessionID)) {
-   System.out.println("Usunięto gracza z listy");
-   return "redirect: https://www.google.pl/";
+  Player player = players.getPlayer(sessionID);
+  Game game = player.getGame();
+  if(game.getGameState().equals(GameState.WAITING)) {
+   HashMap<String, Player> gameplayers = game.getPlayers();
+   gameplayers.remove(sessionID);
+   
+   if(player.isInitiator() && !gameplayers.isEmpty()) {
+     Entry<String, Player> entry = gameplayers.entrySet().iterator().next();
+     String key = entry.getKey();
+     gameplayers.get(key).setInitiator(true);
+   } 
+   
+   if(players.removePlayer(sessionID)) {
+    System.out.println("Usunięto gracza z listy");
+    return "redirect: https://www.google.pl/";
+   } else {
+    System.out.println("Coś poszło nie tak :-), nie można wylogować gracza!");
+    return "redirect:/";
+   }
+   
+  } else if (game.getGameState().equals(GameState.IN_PROGRESS)) {
+   game.setGameState(GameState.WAITING);
+   return "redirect:/";
   } else {
-   System.out.println("Coś poszło nie tak :-)");
-   return null;
-  } 
+   return "redirect:/";
+  }
  }
-
 }

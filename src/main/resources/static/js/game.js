@@ -10,8 +10,14 @@ var choised = false;
 var preData = null;
 var curData = null;
 
-$button_ok = $('<button></button>').text("Kładę").attr('id','ok');
-$button_take = $('<button></button>').text("Biorę").attr('id','take');
+/*var $modal = $('<div></div>').addClass('modal');
+var $modal_content = $('<div></div>').addClass('modal-content');
+var $header =$('<h1></h1>').text('Koniec gry');
+var $info = $('<p></p>').text("...");*/
+//$modal.hide();
+
+var $button_ok = $('<button></button>').text("Kładę").attr('id','ok');
+var $button_take = $('<button></button>').text("Biorę").attr('id','take');
 $('.gamebuttons').append($button_ok );
 $('.gamebuttons').append($button_take);
 $('.gamebuttons').hide();
@@ -61,7 +67,24 @@ var readGameStatus = function() {
 					console.log("Players=" + players);
 				}
 			});
-			drawGameBoard(players, stack);
+			if(state === "END") {
+				var winner = "";
+				for(var i = 0; i < players.length; i++) {
+					if(players[i].getDeck().length === 0) {
+						winner = players[i].getName();
+						break;
+					}
+				}
+				/*context.clearRect(0, 0, canvas.width, canvas.height);
+				$modal.empty();
+				$modal_content.append($header);
+				$info.text("Zwyciężył " + winner);
+				$modal_content.append($info);
+				$modal.append($modal_content);*/
+				alert("koniec gry ! Wygrał: " + winner);
+			} 
+			
+			drawGameBoard(players, stack);	
 			preData = curData;
 		}
 	});
@@ -127,8 +150,7 @@ var drawGameBoard = function(playersArray, stack) {
 	var Y_LEFT_POSITION = Y_RIGHT_POSITION = 190;
 	var X_RIGHT_POSITION = 715;
 	context.font = FONT;
-	canvas.empty();
-	
+	context.clearRect(0, 0, canvas.width, canvas.height);
 	switch(playersArray.length) {
 
 		case 2:
@@ -353,15 +375,15 @@ var drawGameBoard = function(playersArray, stack) {
 
 /*---------------*/
 
-var drawStack = function(stack, cardW, cardH, X_TOP_POSITION) {
+var drawStack = function(gameStack, cardW, cardH, X_TOP_POS) {
 	// X_TOP_POSITION = 150;
-	if(stack != null) {
+	if(gameStack != null) {
 		console.log('Rysuję stos..');
-		$.each(stack, function(index,val) {
+		$.each(gameStack, function(index,val) {
 			stackCardImage = new Image();
 			console.log('Element stosu=' + val);
 			stackCardImage.onload = function() {
-				context.drawImage(stackCardImage, X_TOP_POSITION = X_TOP_POSITION + 5, 350, cardW, cardH);
+				context.drawImage(stackCardImage, X_TOP_POS += 5, 350, cardW, cardH);
 			}
 			stackCardImage.src = "images/" + val + ".png";
 			console.log("src="+stackCardImage.src);
@@ -388,10 +410,18 @@ var drawMyDeck = function (lista) {
 	$('.myDeck ul').empty();
 	if(lista != null) {
 		$.each(lista, function(index, val) {
-			$('<li id="' + val + '"><img src="images/' + val + ".png" + '" alt="' + index + '" ></li>').css({
+			var $list = $('<li></li>');
+			var $img = $('<img>');
+			var url = "images/" + val + ".png";
+			$list.attr("id", val);
+			$img.attr("src", url).attr("alt", "card");
+			$list.append($img);
+			$list.css({
 				'position' : 'absolute',
 				'left' : shift
-			}).appendTo('.myDeck ul');
+			});
+			
+			$list.appendTo('.myDeck ul');
 			shift += 80;	
 		});
 		
@@ -399,7 +429,8 @@ var drawMyDeck = function (lista) {
 			if(!$(this).hasClass("clicked")) {
 				if(isClicked === false) {
 					$(this).addClass("clicked");
-					selectedCardId = $(this).attr("id");	
+					selectedCardId = $(this).attr("id");
+					isClicked = true;
 				} 
 			} else {
 				$(this).removeClass("clicked");
@@ -479,7 +510,8 @@ var pullValidation = function(v,s) {
 }
 
 /*
- * ------------------------------------- START GAME
+ * ------------------------------------- 
+ * 				START GAME
  * -------------------------------------
  */
 

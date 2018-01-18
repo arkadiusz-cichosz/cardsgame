@@ -12,7 +12,7 @@
 <body>
   <div class="modal">
     <div class="modal-content">
-      <a href="cancel" class="modal-content-close">x</a>
+      <a href="cancel" class="modal-content-close">&times</a>
       <article id="dialogBlock"></article>
     </div>
   </div>
