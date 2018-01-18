@@ -2,19 +2,12 @@ const REVERS_CARD = "images/rewers.png";
 const CARDS_DECK = 24; 
 const FONT = "14px Arial";
 var canvas = document.getElementById('canvas');
-var context = canvas.getContext('2d');	
+var context = canvas.getContext('2d');
 var MY_NAME = "Arek";
 var selectedCardId = null;
-var isClicked = false;
 var choised = false;
 var preData = null;
 var curData = null;
-
-/*var $modal = $('<div></div>').addClass('modal');
-var $modal_content = $('<div></div>').addClass('modal-content');
-var $header =$('<h1></h1>').text('Koniec gry');
-var $info = $('<p></p>').text("...");*/
-//$modal.hide();
 
 var $button_ok = $('<button></button>').text("Kładę").attr('id','ok');
 var $button_take = $('<button></button>').text("Biorę").attr('id','take');
@@ -70,18 +63,14 @@ var readGameStatus = function() {
 			if(state === "END") {
 				var winner = "";
 				for(var i = 0; i < players.length; i++) {
-					if(players[i].getDeck().length === 0) {
+					if(players[i].getDeck() === null) {
 						winner = players[i].getName();
 						break;
 					}
 				}
-				/*context.clearRect(0, 0, canvas.width, canvas.height);
-				$modal.empty();
-				$modal_content.append($header);
-				$info.text("Zwyciężył " + winner);
-				$modal_content.append($info);
-				$modal.append($modal_content);*/
-				alert("koniec gry ! Wygrał: " + winner);
+				//context.clearRect(0, 0, canvas.width, canvas.height);
+				endGame(winner);
+				//alert("koniec gry ! Wygrał: " + winner);
 			} 
 			
 			drawGameBoard(players, stack);	
@@ -150,7 +139,7 @@ var drawGameBoard = function(playersArray, stack) {
 	var Y_LEFT_POSITION = Y_RIGHT_POSITION = 190;
 	var X_RIGHT_POSITION = 715;
 	context.font = FONT;
-	context.clearRect(0, 0, canvas.width, canvas.height);
+	context.clearRect(0, 0, canvas.width, canvas.height);//*********************
 	switch(playersArray.length) {
 
 		case 2:
@@ -370,13 +359,13 @@ var drawGameBoard = function(playersArray, stack) {
 			
 	}
 			
-	drawStack(stack, cardWidth, cardHeight, 380);	
+	drawStack(stack, cardWidth, cardHeight, 380);
 }
 
 /*---------------*/
 
 var drawStack = function(gameStack, cardW, cardH, X_TOP_POS) {
-	// X_TOP_POSITION = 150;
+	
 	if(gameStack != null) {
 		console.log('Rysuję stos..');
 		$.each(gameStack, function(index,val) {
@@ -396,7 +385,11 @@ var drawStack = function(gameStack, cardW, cardH, X_TOP_POS) {
 
 var drawMyDeck = function (lista) {
 	var shift = 0;
-	var len = lista.length;
+	var len = 0;
+	if(lista.length != null) {
+		var len = lista.length;
+	}
+	
 	if(len < 6) {
 		shift = 800;
 	} else if (len >= 6 & len < 8) {
@@ -405,7 +398,7 @@ var drawMyDeck = function (lista) {
 		shift = 600;
 	} else if (len >= 10 & len <= 12) {
 		shift = 500;
-	}
+	} 
 	
 	$('.myDeck ul').empty();
 	if(lista != null) {
@@ -424,6 +417,8 @@ var drawMyDeck = function (lista) {
 			$list.appendTo('.myDeck ul');
 			shift += 80;	
 		});
+		
+		var isClicked = false;
 		
 		$('.myDeck ul li').click(function() {
 			if(!$(this).hasClass("clicked")) {
@@ -507,6 +502,17 @@ var pullValidation = function(v,s) {
 		alert(s);
 	}
 	readGameStatus();
+}
+
+/*---------------*/
+
+var endGame = function(winner) {
+	 var txt;
+	    if (confirm("Koniec gry ! Wygrał: " + winner)) {
+	    	location.reload();
+	    } else {
+	        txt = "Rozumiem chcesz jeszcze popatrzeć!";
+	    }
 }
 
 /*
