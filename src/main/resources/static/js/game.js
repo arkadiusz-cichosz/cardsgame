@@ -127,6 +127,7 @@ var drawGameBoard = function(playersArray, stack) {
 	var Y_LEFT_POSITION = Y_RIGHT_POSITION = 190;
 	var X_RIGHT_POSITION = 715;
 	context.font = FONT;
+	canvas.empty();
 	
 	switch(playersArray.length) {
 
