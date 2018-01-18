@@ -7,6 +7,9 @@ var MY_NAME = "Arek";
 var selectedCardId = null;
 var isClicked = false;
 var choised = false;
+var preData = null;
+var curData = null;
+
 $button_ok = $('<button></button>').text("Kładę").attr('id','ok');
 $button_take = $('<button></button>').text("Biorę").attr('id','take');
 $('.gamebuttons').append($button_ok );
@@ -36,25 +39,31 @@ class player {
 
 var readGameStatus = function() {
 	$.getJSON("status/game" , function(data) {
-		var stack = null;
-		var players = null;
-		var state = "WAITING";
-		$.each(data, function(index, val) {
-			if(index === "myName") {
-				MY_NAME = val;
-				console.log("myName=" + MY_NAME);
-			} else if(index === "stack") {
-				stack = val;
-				console.log("Stack=" + stack);
-			} else if(index === "state") {
-				state = val;
-				console.log("State=" + state);
-			} else if(index === "players") {
-				players = toObjectPlayerArray(val);
-				console.log("Players=" + players);
-			}
-		});
-		drawGameBoard(players, stack);
+		
+		curData = JSON.stringify(data);
+		
+		if (preData !== curData) {
+			var stack = null;
+			var players = null;
+			var state = "WAITING";
+			$.each(data, function(index, val) {
+				if(index === "myName") {
+					MY_NAME = val;
+					console.log("myName=" + MY_NAME);
+				} else if(index === "stack") {
+					stack = val;
+					console.log("Stack=" + stack);
+				} else if(index === "state") {
+					state = val;
+					console.log("State=" + state);
+				} else if(index === "players") {
+					players = toObjectPlayerArray(val);
+					console.log("Players=" + players);
+				}
+			});
+			drawGameBoard(players, stack);
+			preData = curData;
+		}
 	});
 }
 
@@ -113,7 +122,7 @@ var drawGameBoard = function(playersArray, stack) {
 	var topPlayerDeck = null;
 	var stackCardImage = null;
 	var reversImage = null;
-	var X_TOP_POSITION = 300;//150;
+	var X_TOP_POSITION = 300;// 150;
 	var X_LEFT_POSITION = 0;
 	var Y_LEFT_POSITION = Y_RIGHT_POSITION = 190;
 	var X_RIGHT_POSITION = 715;
@@ -375,7 +384,7 @@ var drawMyDeck = function (lista) {
 		shift = 500;
 	}
 	
-	// $('.myDeck ul').empty();
+	$('.myDeck ul').empty();
 	if(lista != null) {
 		$.each(lista, function(index, val) {
 			$('<li id="' + val + '"><img src="images/' + val + ".png" + '" alt="' + index + '" ></li>').css({
@@ -411,11 +420,8 @@ var playCard = function(selectedCardId) {
 		$.each(data, function(index, value) {
 			if(index === "validation") {
 				validation = value;
-				console.log("value is:" + value);
-				console.log("validation is:" + validation);
 			} else if (index === "statement") {
 				statement = value;
-				console.log("statement is:" + statement);
 			}
 		});
 		pullValidation(validation, statement);
@@ -435,7 +441,12 @@ var takeCards = function() {
 			} else if (index === "statement") {
 				statement = value;
 			}
-			readGameStatus();
+			
+			if(validation === "false") {
+				alert(statement);
+			} else {
+				readGameStatus();
+			}
 			console.log("Validation:" + validation);
 			console.log(statement);
 		});
@@ -467,10 +478,9 @@ var pullValidation = function(v,s) {
 }
 
 /*
--------------------------------------
-			START GAME
--------------------------------------
-*/
+ * ------------------------------------- START GAME
+ * -------------------------------------
+ */
 
 $( document ).ready(function() {
 	readGameStatus();

@@ -36,9 +36,12 @@ public class MainController {
     System.out.println("Inicjalizacja...");
     //session.setMaxInactiveInterval(5 * 60);
     return "init";
-   } else {
+   } else if(players.getPlayer(sessionID).getGame().getGameState().equals(GameState.IN_PROGRESS)) {
     System.out.println("Gra...");
     return "game";
+   } else {
+    System.out.println("Koniec gry");
+    return "end";
    }
   }
  }

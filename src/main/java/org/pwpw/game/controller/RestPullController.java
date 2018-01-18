@@ -1,11 +1,13 @@
 package org.pwpw.game.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.json.JSONArray;
@@ -20,6 +22,7 @@ import org.pwpw.game.model.Player;
 import org.pwpw.game.model.PlayerDeck;
 import org.pwpw.game.model.Players;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,15 +43,27 @@ public class RestPullController {
 	PanDeck panDeck;
 
 	@GetMapping("/status/game")
-	public String gameStatus(HttpSession session) {
+	public String gameStatus(HttpSession session, HttpServletResponse servletResponse, Model model) {
 		String sessionID = session.getId();
 		if (players.getPlayer(sessionID) != null) {
-			return createJsonGameStatus(sessionID, players.getPlayer(sessionID).getGame());
+		 if(players.getPlayer(sessionID).getGame().getGameState().equals(GameState.END)) {
+		  endState(servletResponse);
+		 } 
+		 return createJsonGameStatus(sessionID, players.getPlayer(sessionID).getGame());
 		} else {
 			return null;
 		}
 	}
 
+	@GetMapping("/status/end")
+	public void endState(HttpServletResponse servletResponse) {
+	 try {
+   servletResponse.sendRedirect("/");
+  } catch (IOException e) {
+   e.printStackTrace();
+  }
+	}
+	
 	@GetMapping("/status/options")
 	public String optionsList() throws JSONException, JsonProcessingException {
 		HashMap<String, String> waitingPlayers = Players.getWaitingGames(players.getPlayers());
@@ -148,10 +163,18 @@ public class RestPullController {
 			if ((pushedCard.getValue().compareTo(stack.peek().getValue())) >= 0) {
 				stack.push(deck.getCard(id));// połóż na stosie swoja kartę
 				deck.removeCard(id); // zdejmij kartę ze swojej talii
-				jsonObject.accumulate("validation", "true");// dobra karta
-				jsonObject.accumulate("statement", "Karta wydana prawidłowo.");
-				Players.loopGame(game.getPlayers(), player);
-				return jsonObject.toString();
+				if(deck.getCards().isEmpty()) {
+				 game.setGameState(GameState.END);
+				 jsonObject.accumulate("validation", "true");// dobra karta
+     jsonObject.accumulate("statement", "Karta wydana prawidłowo.");
+     return jsonObject.toString();
+				} else {
+				 jsonObject.accumulate("validation", "true");// dobra karta
+	    jsonObject.accumulate("statement", "Karta wydana prawidłowo.");
+	    Players.loopGame(game.getPlayers(), player);
+	    return jsonObject.toString();
+				}
+				
 			} else {
 				jsonObject.accumulate("validation", "false");// zła karta
 				jsonObject.accumulate("statement", "Położyłeś niewłaściwą kartę !");
@@ -169,16 +192,22 @@ public class RestPullController {
    Deck deck = player.getDeck();
    Game game = player.getGame();
    Stack<Card> stack = game.getGameStack();
-   for (int i = 0; i < 3; i++) {
-    deck.addCard(stack.pop());
+   if(stack.size() >= 4) {
+    for (int i = 0; i < 3; i++) {
+     deck.addCard(stack.pop());
+    }
+    Players.loopGame(game.getPlayers(), player);
+    jsonObject.accumulate("validation", "true");
+    jsonObject.accumulate("statement", "Karty zostały pobrane.");
+    return jsonObject.toString();
+   } else {
+    jsonObject.accumulate("validation", "false");
+    jsonObject.accumulate("statement", "Nie można pobrac kard bo jest ich zbyt mało!");
+    return jsonObject.toString();
    }
-   Players.loopGame(game.getPlayers(), player);
-   jsonObject.accumulate("validation", "true");
-   jsonObject.accumulate("statement", "Karty zostały dodane.");
-   return jsonObject.toString();
   } else {
    jsonObject.accumulate("validation", "false");
-   jsonObject.accumulate("statement", "Wystąpił bład, karty nie zostały dodane do talli.");
+   jsonObject.accumulate("statement", "Wystąpił bład, nie ma takiego gracza.");
    return jsonObject.toString();
   }
  }

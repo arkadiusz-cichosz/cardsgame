@@ -75,7 +75,6 @@ var checkInit = function(newOptions) {
 var pullInit = function() {
 	$.getJSON("status/init", function(data) {
 			curData = JSON.stringify(data);
-			console.log("JSON: " + curData);
 			if(curData !== "{}") {
 				if (preData !== curData) {
 					checkInit(data);
