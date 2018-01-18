@@ -47,11 +47,14 @@ public class MainController {
  public String start(HttpSession session) {
   String sessionID = session.getId();
   Player player = players.getPlayer(sessionID);
+  Game game = player.getGame();
   System.out.println("SessionID is=" + sessionID);
   if (player != null) {
    //session.setMaxInactiveInterval(45 * 60);
-   player.getGame().setGameState(GameState.IN_PROGRESS);
-   player.getGame().init(panDeck);
+   if(game.getGameState().equals(GameState.WAITING)) {
+    game.setGameState(GameState.IN_PROGRESS);
+    game.init(panDeck);
+   }
    System.out.println("Gra zainicjowana");
   } else {
    System.out.println("Nie ma ciebie na liście graczy");
