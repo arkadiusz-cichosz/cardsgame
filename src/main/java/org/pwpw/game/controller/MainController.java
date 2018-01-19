@@ -116,6 +116,12 @@ public class MainController {
    game.setGameState(GameState.WAITING);
    return "redirect:/";
   } else {
+   HashMap<String, Player> players = game.getPlayers();
+   if(game.getGameState().equals(GameState.END)) {
+  //players.remove(sessionID);
+    players = new HashMap<>();
+    game.setGameState(GameState.WAITING);
+   }
    return "redirect:/";
   }
  }

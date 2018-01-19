@@ -373,6 +373,7 @@ var drawStack = function(gameStack, cardW, cardH, X_TOP_POS) {
 			stackCardImage = new Image();
 			console.log('Element stosu=' + val);
 			stackCardImage.onload = function() {
+				console.log("X_TOP=" + X_TOP_POS);
 				context.drawImage(stackCardImage, X_TOP_POS += 5, 350, cardW, cardH);
 			}
 			stackCardImage.src = "images/" + val + ".png";
@@ -407,7 +408,7 @@ var drawMyDeck = function (lista) {
 			var $list = $('<li></li>');
 			var $img = $('<img>');
 			var url = "images/" + val + ".png";
-			$list.attr("id", val);
+			$list.attr("id", val).attr('title', val);
 			$img.attr("src", url).attr("alt", "card");
 			$list.append($img);
 			$list.css({
