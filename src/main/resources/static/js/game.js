@@ -1,19 +1,11 @@
-const REVERS_CARD = "images/rewers.png";
-const CARDS_DECK = 24; 
-const FONT = "14px Arial";
-var canvas = document.getElementById('canvas');
-var context = canvas.getContext('2d');
-var MY_NAME = "Arek";
-var selectedCardId = null;
-var choised = false;
-var preData = null;
-var curData = null;
-
-var $button_ok = $('<button></button>').text("Kładę").attr('id','ok');
-var $button_take = $('<button></button>').text("Biorę").attr('id','take');
-$('.gamebuttons').append($button_ok );
-$('.gamebuttons').append($button_take);
-$('.gamebuttons').hide();
+	const REVERS_CARD = "images/rewers.png";
+	const CARDS_DECK = 24; 
+	const FONT = "14px Arial";
+	var MY_NAME = "Arek";
+	var selectedCardId = null;
+	var choised = false;
+	var preData = null;
+	var curData = null;
 
 class player {
 	constructor(deck, name, playNow) {
@@ -38,9 +30,9 @@ class player {
 
 var readGameStatus = function() {
 	$.getJSON("status/game" , function(data) {
-		
+
 		curData = JSON.stringify(data);
-		
+
 		if (preData !== curData) {
 			var stack = null;
 			var players = null;
@@ -68,14 +60,12 @@ var readGameStatus = function() {
 						break;
 					}
 				}
-				//context.clearRect(0, 0, canvas.width, canvas.height);
 				endGame(winner);
-				//alert("koniec gry ! Wygrał: " + winner);
 			} else {
 				drawGameBoard(players, stack);	
 				preData = curData;
 			}
-			
+
 		}
 	});
 }
@@ -139,8 +129,8 @@ var drawGameBoard = function(playersArray, stack) {
 	var X_LEFT_POSITION = 0;
 	var Y_LEFT_POSITION = Y_RIGHT_POSITION = 190;
 	var X_RIGHT_POSITION = 715;
+	context.clearRect(0, 0, canvas.width, canvas.height);
 	context.font = FONT;
-	context.clearRect(0, 0, canvas.width, canvas.height);//*********************
 	switch(playersArray.length) {
 
 		case 2:
@@ -173,15 +163,11 @@ var drawGameBoard = function(playersArray, stack) {
 					X_TOP_POSITION = (920 - (cardWidth + ((((playersArray[i].getDeck()).length)-1)*10)))/2;
 
 					$.each(playersArray[i].getDeck(), function() {
-	
 						reversImage = new Image();
-						
 						reversImage.onload = function() {
-								context.drawImage(reversImage, X_TOP_POSITION = X_TOP_POSITION + 10, 20, cardWidth, cardHeight);
-							}
-
+							context.drawImage(reversImage, X_TOP_POSITION += 10, 20, cardWidth, cardHeight);
+						}
 						reversImage.src = REVERS_CARD;	
-
 					});
 				}
 			}
@@ -359,30 +345,35 @@ var drawGameBoard = function(playersArray, stack) {
 		default:
 			
 	}
-			
-	drawStack(stack, cardWidth, cardHeight, 380);
+		
+	drawStack(stack, cardWidth, cardHeight);
 }
 
 /*---------------*/
 
-var drawStack = function(gameStack, cardW, cardH, X_TOP_POS) {
-	
+var drawStack = function(gameStack, cardW, cardH) {
 	if(gameStack != null) {
 		console.log('Rysuję stos..');
+		var X_TOP_POS = 380;
 		$.each(gameStack, function(index,val) {
-			stackCardImage = new Image();
-			console.log('Element stosu=' + val);
-			stackCardImage.onload = function() {
-				console.log("X_TOP=" + X_TOP_POS);
-				context.drawImage(stackCardImage, X_TOP_POS += 5, 350, cardW, cardH);
-			}
-			stackCardImage.src = "images/" + val + ".png";
-			console.log("src="+stackCardImage.src);
-		});
+			drawStackCard(val, X_TOP_POS, cardW, cardH);
+			X_TOP_POS += 5;		
+		});		
 	} else {
 		console.log('Stos jest pusty!');
 	}
 }
+
+/*---------------*/
+
+var drawStackCard = function(card, xPos, width, height) {
+	stackCardImage = new Image();
+	stackCardImage.src = "images/" + card + ".png";
+	stackCardImage.onload = function() {
+		context.drawImage(stackCardImage, xPos, 350, width, height);
+	}
+}
+
 /*---------------*/
 
 var drawMyDeck = function (lista) {
@@ -524,8 +515,16 @@ var endGame = function(winner) {
  */
 
 $( document ).ready(function() {
+	canvas = document.getElementById('canvas');
+	context = canvas.getContext('2d');
+
+	var $button_ok = $('<button></button>').text("Kładę").attr('id','ok');
+	var $button_take = $('<button></button>').text("Biorę").attr('id','take');
+	$('.gamebuttons').append($button_ok );
+	$('.gamebuttons').append($button_take);
+	$('.gamebuttons').hide();
 	readGameStatus();
-	setInterval(readGameStatus, 5000);
+	setInterval(readGameStatus, 3000);
 	$('#ok').click(function() {
 		playCard(selectedCardId);
 	});
