@@ -47,7 +47,7 @@ public class MainController {
     return "game";
    } else {
     System.out.println("Koniec gry");
-    return "game";
+    return "init";
    }
   }
  }

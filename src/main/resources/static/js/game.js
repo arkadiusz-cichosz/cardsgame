@@ -71,10 +71,11 @@ var readGameStatus = function() {
 				//context.clearRect(0, 0, canvas.width, canvas.height);
 				endGame(winner);
 				//alert("koniec gry ! Wygrał: " + winner);
-			} 
+			} else {
+				drawGameBoard(players, stack);	
+				preData = curData;
+			}
 			
-			drawGameBoard(players, stack);	
-			preData = curData;
 		}
 	});
 }
