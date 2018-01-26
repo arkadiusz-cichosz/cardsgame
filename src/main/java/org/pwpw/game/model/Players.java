@@ -59,29 +59,29 @@ public class Players implements PlayersRepository {
  public static void loopGame(HashMap<String, Player> players, Player currentPlayer) {
   currentPlayer.setPlayNow(false);
   List<Player> playersList = new ArrayList<>(players.values());
-  int listSize = playersList.size();
-  int index = playersList.indexOf(currentPlayer);
-  if (index == (listSize - 1)) {
+  int indexOfLastItem = (playersList.size() - 1);
+  int currentIndex = playersList.indexOf(currentPlayer);
+  if (currentIndex == indexOfLastItem) {
    playersList.get(0).setPlayNow(true);
   } else {
-   playersList.get((index + 1)).setPlayNow(true);
+   playersList.get(++currentIndex).setPlayNow(true);
   }
  }
  
  public static HashMap<String, String> getWaitingGames(HashMap<String, Player> players) {
-  HashMap<String, String> freeGameList = new HashMap<>();
+  HashMap<String, String> waitingGameList = new HashMap<>();
   if(players != null && !players.isEmpty()) {
    for (String sessionID : players.keySet()) { 
     Player p = players.get(sessionID);
     if(p.getGame().getGameState().equals(GameState.WAITING)) {
      if(p.getGame().getPlayers().size() < 4) {
       if(p.isInitiator()) {
-       freeGameList.put(sessionID, p.getName());
+       waitingGameList.put(sessionID, p.getName());
       }
      }
     }
    }
-   return freeGameList;
+   return waitingGameList;
   } else {
    return null;
   }
@@ -90,7 +90,8 @@ public class Players implements PlayersRepository {
  @Override
  public boolean removePlayer(String sessionId) {
   if(players.size() > 0 && players.containsKey(sessionId)) {
-   players.get(sessionId).getGame().getPlayers().remove(sessionId);
+   Player player = players.get(sessionId);
+   player.getGame().getPlayers().remove(sessionId);
    players.remove(sessionId);
    return true;
   } else {
