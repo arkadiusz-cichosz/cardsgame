@@ -72,6 +72,9 @@ public class Game implements Serializable{
    for(String key : players.keySet()) {
     Card card = tempCardsList.remove(0);
     Player player = players.get(key);
+    if(card.getName().equals("9Kier")) {
+     player.setPlayNow(true);
+    }
     player.getDeck().addCard(card);
    }
   }
